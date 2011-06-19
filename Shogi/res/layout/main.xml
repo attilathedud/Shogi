@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical" android:layout_gravity="center" android:background="@drawable/background">
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/textView1" android:text="@string/app_name" android:layout_gravity="center" android:layout_margin="40dip" android:textColor="@color/background"></TextView>
+    <Button android:layout_height="wrap_content" android:text="@string/new_game" android:layout_width="match_parent" android:id="@+id/new_game_id"></Button>
+    <Button android:layout_height="wrap_content" android:text="@string/cont_game" android:layout_width="match_parent" android:id="@+id/cont_game_id"></Button>
+    <Button android:layout_height="wrap_content" android:text="@string/about" android:layout_width="match_parent" android:id="@+id/about_id"></Button>
+    <Button android:layout_height="wrap_content" android:text="@string/exit" android:layout_width="match_parent" android:id="@+id/exit_id"></Button>
+</LinearLayout>
