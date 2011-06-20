@@ -14,6 +14,7 @@ public final class R {
         public static final int background=0x7f050000;
         public static final int board=0x7f050001;
         public static final int selection_c=0x7f050002;
+        public static final int selection_c2=0x7f050003;
     }
     public static final class drawable {
         public static final int background=0x7f020000;
@@ -23,14 +24,8 @@ public final class R {
         public static final int about_id=0x7f080003;
         public static final int cont_game_id=0x7f080002;
         public static final int exit_id=0x7f080004;
-        public static final int linearLayout1=0x7f080005;
         public static final int new_game_id=0x7f080001;
-        public static final int settings_id=0x7f08000b;
-        public static final int tableLayout1=0x7f080006;
-        public static final int tableRow1=0x7f080007;
-        public static final int tableRow2=0x7f080008;
-        public static final int tableRow3=0x7f080009;
-        public static final int tableRow4=0x7f08000a;
+        public static final int settings_id=0x7f080005;
         public static final int textView1=0x7f080000;
     }
     public static final class layout {

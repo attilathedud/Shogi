@@ -3,4 +3,5 @@
 <color name="background">#0000</color>
 <color name="board">#D2B48C</color>
 <color name="selection_c">#500F</color>
+<color name="selection_c2">#5F00</color>
 </resources>

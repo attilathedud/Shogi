@@ -16,7 +16,8 @@ public class ShogiActivity extends Activity implements OnClickListener{
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
@@ -41,13 +42,13 @@ public class ShogiActivity extends Activity implements OnClickListener{
 			Log.d( "Shogi", "Continue game selected" );
 			break;
 		case R.id.about_id:
-			AlertDialog aboutDialog = new AlertDialog.Builder( this ).create( );
+			final AlertDialog aboutDialog = new AlertDialog.Builder( this ).create( );
 			aboutDialog.setTitle( "About Shogi" );
 			aboutDialog.setMessage( "SHOGI IS A GAME BRAH" );
 			aboutDialog.setButton( "Back", new DialogInterface.OnClickListener( ) {
 				public void onClick(DialogInterface dialog, int sButton)
 				{
-					//Empty
+					aboutDialog.cancel( );
 				}
 			});
 			aboutDialog.show();
@@ -66,14 +67,16 @@ public class ShogiActivity extends Activity implements OnClickListener{
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu) 
+	{
 		boolean result = super.onCreateOptionsMenu(menu);
 		getMenuInflater( ).inflate( R.menu.menu, menu);
 		return result;
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
 		switch( item.getItemId() )
 		{
 		case R.id.settings_id:

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -12,7 +14,8 @@ import android.view.View;
 public class BoardView extends View {
 	
 	private float width, height;
-	private int selX, selY;
+	private int selX, selY, oSelX, oSelY;
+	private boolean pieceSelected = false;
 	private final ShogiGame curGame;
 	private final Rect selRect = new Rect( );
 	
@@ -22,6 +25,10 @@ public class BoardView extends View {
 		this.curGame = ( ShogiGame ) context;
 		setFocusable( true );
 		setFocusableInTouchMode( true );
+		selX = 4;
+		selY = 4;
+		oSelX = -1;
+		oSelY = -1;
 	}
 	
 	private void getRect( int x, int y, Rect rect )
@@ -29,18 +36,46 @@ public class BoardView extends View {
 		rect.set( ( int )(x * this.width), ( int )(y * this.height ), ( int )( x * width + width ), ( int )( y * height + height ));
 	}
 	
-	private void select( int x, int y ) {
+	private void select( int x, int y ) 
+	{
 		invalidate( selRect );
 		
 		selX = Math.min(Math.max(x, 0), 8);
 		selY = Math.min(Math.max(y, 0), 8);
 		getRect( selX, selY, selRect );
 		
+		if( oSelX != -1 && oSelY != -1 )
+		{
+			if( selX == oSelX && selY == oSelY )
+			{
+				oSelX = -1;
+				oSelY = -1;
+				pieceSelected = false;
+				return;
+			}
+			ShogiPiece temp = this.curGame.getPiece( oSelX, oSelY );
+			this.curGame.setPiece( oSelX, oSelY, selX, selY, temp );
+			invalidate(selRect);
+			oSelX = -1;
+			oSelY = -1;
+			pieceSelected = false;
+			return;
+		}
+		
+		if( this.curGame.getPiece( selX, selY ) != null && 
+				this.curGame.getPiece( selX, selY ).getSide() == this.curGame.getTurn() )
+		{
+			pieceSelected = true;
+			oSelX = selX;
+			oSelY = selY;
+		}
+		
 		invalidate(selRect);
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) 
+	{
 		this.width = w / 9f;
 		this.height = h / 9f;
 		getRect( selX, selY, selRect );
@@ -48,11 +83,9 @@ public class BoardView extends View {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
+	protected void onDraw(Canvas canvas) 
+	{
 		//draw board
-		
 		Paint background = new Paint( );
 		
 		background.setColor( getResources( ).getColor( R.color.board ) );
@@ -79,15 +112,53 @@ public class BoardView extends View {
 		
 		//draw pieces
 		
+		Paint foreground = new Paint( Paint.ANTI_ALIAS_FLAG );
+		foreground.setStyle( Style.FILL );
+		foreground.setTextSize( height * .75f );
+		foreground.setTextScaleX( width / height );
+		foreground.setTextAlign( Paint.Align.CENTER );
+		
+		FontMetrics fm = foreground.getFontMetrics( );
+		
+		float x = width / 2;
+		float y = height / 2 - ( fm.ascent + fm.descent ) / 2;
+		
+		for( int i = 0; i < 9; i++ )
+		{
+			for( int j = 0; j < 9; j++ )
+			{
+				if( this.curGame.getPiece( i, j ) == null )
+					continue;
+				
+				if( this.curGame.getPiece( i, j ).getSide() == true )
+					foreground.setColor( Color.BLACK );
+				else
+					foreground.setColor( Color.WHITE );
+				
+				canvas.drawText( this.curGame.getPiece( i, j ).getPiece(), i * width + x, j * height + y, foreground );
+			}
+		}
+		
 		//draw selection square
+		
 		Paint selected = new Paint( );
-		selected.setColor( getResources( ).getColor( R.color.selection_c ) );
+		
+		if( pieceSelected == false )
+			selected.setColor( getResources( ).getColor( R.color.selection_c ) );
+		else
+			selected.setColor( getResources( ).getColor( R.color.selection_c2 ) );
+		
+		getRect( selX, selY, selRect );
+		
 		canvas.drawRect( selRect, selected );
 		
+		super.onDraw(canvas);
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	/*Todo: ensure that user must press enter*/
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+	{
 		switch( keyCode )
 		{
 		case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -108,7 +179,8 @@ public class BoardView extends View {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(MotionEvent event) 
+	{
 		if( event.getAction( ) != MotionEvent.ACTION_DOWN )
 			return super.onTouchEvent(event);
 		
