@@ -1,5 +1,6 @@
 package com.attila.shogi;
 
+
 public class ShogiPiece {
 	
 	private String piece;
@@ -144,7 +145,45 @@ public class ShogiPiece {
 		}
 		else if( piece == "角" || piece == "馬" )
 		{
-			
+			/*Todo: make less ugly */
+			if( x > ox )
+			{
+				if( y > oy )
+				{
+					for( int i = ox + 1, j = oy + 1; i < x; i++, j++ )
+					{
+						if( board[ i ][ j ] != null )
+							return false;
+					}
+				}
+				else
+				{
+					for( int i = ox + 1, j = oy - 1; i < x; i++, j-- )
+					{
+						if( board[ i ][ j ] != null )
+							return false;
+					}
+				}
+			}
+			else
+			{
+				if( y > oy )
+				{
+					for( int i = ox - 1, j = oy + 1; i > x; i--, j++ )
+					{
+						if( board[ i ][ j ] != null )
+							return false;
+					}
+				}
+				else
+				{
+					for( int i = ox - 1, j = oy - 1; i > x; i--, j-- )
+					{
+						if( board[ i ][ j ] != null )
+							return false;
+					}
+				}
+			}
 		}
 		else if( piece == "香" )
 		{
