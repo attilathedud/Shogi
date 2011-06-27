@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -36,22 +34,24 @@ public class ShogiActivity extends Activity implements OnClickListener{
 		switch( v.getId( ) )
 		{
 		case R.id.new_game_id:
+			/*Todo: allow to start from scenario */
 			startNewGame( );
 			break;
 		case R.id.cont_game_id:
+			/*Todo: add in continue game list */
 			Log.d( "Shogi", "Continue game selected" );
 			break;
 		case R.id.about_id:
-			final AlertDialog aboutDialog = new AlertDialog.Builder( this ).create( );
-			aboutDialog.setTitle( "About Shogi" );
-			aboutDialog.setMessage( "SHOGI IS A GAME BRAH" );
-			aboutDialog.setButton( "Back", new DialogInterface.OnClickListener( ) {
-				public void onClick(DialogInterface dialog, int sButton)
-				{
-					aboutDialog.cancel( );
-				}
-			});
-			aboutDialog.show();
+			AlertDialog.Builder builder = new AlertDialog.Builder( this );
+			builder.setMessage( "About info here" )
+					.setTitle( "About Shogi" )
+			       .setPositiveButton( "Cancel", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show( );
 			break;
 		case R.id.exit_id:
 			setResult( RESULT_OK, null );
@@ -64,27 +64,6 @@ public class ShogiActivity extends Activity implements OnClickListener{
 	{
 		Intent iGame = new Intent( this, ShogiGame.class );
 		startActivity( iGame );
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) 
-	{
-		boolean result = super.onCreateOptionsMenu(menu);
-		getMenuInflater( ).inflate( R.menu.menu, menu);
-		return result;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) 
-	{
-		switch( item.getItemId() )
-		{
-		case R.id.settings_id:
-			startActivity( new Intent( this, Prefs.class ) );
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 }

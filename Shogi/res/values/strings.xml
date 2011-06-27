@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shogi</string>
-    <string name="menu_settings">Settings</string>
-    <string name="flip_board_t">"Flip board"</string>
-    <string name="new_game">New Game</string>
-    <string name="cont_game">Continue Game</string>
-    <string name="about">About</string>
-    <string name="exit">Exit</string>
+    <string name="invalid_move">Invalid move</string>
+    <string name="flip_board_t">Flip board</string>
 </resources>

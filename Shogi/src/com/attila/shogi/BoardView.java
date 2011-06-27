@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -37,12 +36,22 @@ public class BoardView extends View {
 	}
 	
 	private void select( int x, int y ) 
-	{
+	{	
 		invalidate( selRect );
 		
 		selX = Math.min(Math.max(x, 0), 8);
 		selY = Math.min(Math.max(y, 0), 8);
 		getRect( selX, selY, selRect );
+		
+		if( this.curGame.getDrop() != -1 )
+		{
+			pieceSelected = false;
+			oSelX = -1;
+			oSelY = -1;
+			this.curGame.dropPiece( selX, selY );
+			invalidate(selRect);
+			return;
+		}
 		
 		if( oSelX != -1 && oSelY != -1 )
 		{
@@ -53,8 +62,8 @@ public class BoardView extends View {
 				pieceSelected = false;
 				return;
 			}
-			ShogiPiece temp = this.curGame.getPiece( oSelX, oSelY );
-			this.curGame.setPiece( oSelX, oSelY, selX, selY, temp );
+			
+			this.curGame.setPiece( oSelX, oSelY, selX, selY );
 			invalidate(selRect);
 			oSelX = -1;
 			oSelY = -1;
@@ -136,6 +145,7 @@ public class BoardView extends View {
 					foreground.setColor( Color.WHITE );
 				
 				canvas.drawText( this.curGame.getPiece( i, j ).getPiece(), i * width + x, j * height + y, foreground );
+				
 			}
 		}
 		
@@ -155,8 +165,8 @@ public class BoardView extends View {
 		super.onDraw(canvas);
 	}
 
-	@Override
-	/*Todo: ensure that user must press enter*/
+	/*@Override
+	Todo: ensure that user must press enter
 	public boolean onKeyDown(int keyCode, KeyEvent event) 
 	{
 		switch( keyCode )
@@ -176,7 +186,7 @@ public class BoardView extends View {
 		}
 		
 		return super.onKeyDown(keyCode, event);
-	}
+	}*/
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) 

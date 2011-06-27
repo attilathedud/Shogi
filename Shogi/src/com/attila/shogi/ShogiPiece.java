@@ -56,6 +56,7 @@ public class ShogiPiece {
 			return " ";
 	}
 	
+	/*Todo check for revealing check*/
 	public boolean isValidMove( int ox, int oy, int x, int y )
 	{
 		if( piece == "歩" )
@@ -67,8 +68,6 @@ public class ShogiPiece {
 		{
 			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) )
 				return false;
-
-			/*Todo check for revealing check*/
 		}
 		else if( piece == "金" || piece == "と" || piece == "杏" || piece == "全" || piece == "圭" )
 		{
