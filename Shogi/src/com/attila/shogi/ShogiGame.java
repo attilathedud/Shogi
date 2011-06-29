@@ -3,6 +3,7 @@ package com.attila.shogi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
 public class ShogiGame extends Activity {
@@ -17,9 +20,10 @@ public class ShogiGame extends Activity {
 	private final boolean BLACK = true, WHITE = false;
 	
 	private ShogiPiece board[ ][ ] = new ShogiPiece[ 9 ][ 9 ];
-	private int bDrop[ ] = new int[ 7 ], wDrop[ ] = new int[ 7 ], drop = -1;
+	private int bDrop[ ] = new int[ 7 ], wDrop[ ] = new int[ 7 ], drop = -1, curMove = 1;
 	private boolean turn = true;
 	private BoardView bvBoard;
+	private String moveList = "";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -29,6 +33,16 @@ public class ShogiGame extends Activity {
 		initBoard( );
 		
 		bvBoard = new BoardView( this );
+		final Context k = this;
+		bvBoard.setOnLongClickListener( new OnLongClickListener( ) {
+			
+			public boolean onLongClick( View v )
+			{
+				Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ) );
+				d.show( );
+				return true;
+			}
+		});
 		setContentView( bvBoard );
 		bvBoard.requestFocus( );
 	}
@@ -73,6 +87,10 @@ public class ShogiGame extends Activity {
 		Log.d( "SHOGI" , "BACK PRESSED" );
 		if( drop != -1 )
 			drop = -1;
+		else
+		{
+			
+		}
 		//super.onBackPressed();
 	}
 	
@@ -97,8 +115,26 @@ public class ShogiGame extends Activity {
 			d.show( );
 			return true;
 		case R.id.move_list_id:
-			/*Todo: add in move list */
+			AlertDialog.Builder builder = new AlertDialog.Builder( this );
+			builder.setMessage( moveList + "\n" )
+					.setTitle( "Move List" )
+			       .setPositiveButton( "Back", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show( );
+			
 			return true;
+		case R.id.save_and_r_id:
+			/*Todo: save game */
+			finish( );
+			return true;
+		case R.id.exitg_id:
+			finish( );
+			return true;
+			
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -122,13 +158,56 @@ public class ShogiGame extends Activity {
 	public void dropPiece( int x, int y )
 	{
 		if( board[ x ][ y ] != null )
+		{
+			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+		    notify.setGravity( Gravity.CENTER, 0, 0 );
+		    notify.show( );
+		    
+		    drop = -1;
+		    
 			return;
+		}
 		
-		/*Todo: Check for illegal drops */
+		/*Todo: Ensure checkmate isn't given by dropping a pawn */
+		if( ( turn ? y == 0 : y == 8 ) && ( drop == 0 || drop == 1 || drop == 2 ) )
+		{
+			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+		    notify.setGravity( Gravity.CENTER, 0, 0 );
+		    notify.show( );
+		    
+		    drop = -1;
+		    
+			return;
+		}	
+		else if( ( turn ? y == 1 : y == 7 ) && drop == 1 )
+		{
+			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+		    notify.setGravity( Gravity.CENTER, 0, 0 );
+		    notify.show( );
+		    
+		    drop = -1;
+		    
+			return;
+		}
 
 		switch( drop )
 		{
 		case 0:
+			for( int i = 0; i < 9; i++ )
+			{
+				if( board[ x ][ i ] == null )
+					continue;
+				else if( board[ x ][ i ].getPiece() == "歩" && board[ x ][ i ].getSide( ) == turn )
+				{
+					Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+				    notify.setGravity( Gravity.CENTER, 0, 0 );
+				    notify.show( );
+				    
+				    drop = -1;
+				    
+					return;
+				}
+			}
 			board[ x ][ y ] = new ShogiPiece( "歩", turn );
 			break;
 		case 1:
@@ -155,17 +234,56 @@ public class ShogiGame extends Activity {
 		else
 			wDrop[ drop ]--;
 		
+		String temp = null;
+		
+		switch( drop )
+		{
+		case 0:
+			temp = "歩";
+			break;
+		case 1:
+			temp = "桂";
+			break;
+		case 2:
+			temp = "香";
+			break;
+		case 3:
+			temp = "銀";
+			break;
+		case 4:
+			temp = "金";
+			break;
+		case 5:
+			temp = "角";
+			break;
+		case 6:
+			temp = "飛";
+		}
+		
+		moveList += "\n" + curMove + ". " + temp + "*" + ( 9 - x ) + ( char)( 65 + y );
+		curMove++;
+		
 		drop = -1;
 		turn = !turn;
+	}
+	
+	private void onPromote( ShogiPiece s )
+	{
+	   moveList += "+";
+	   s.promote();
+  	   setContentView( bvBoard );
+  	   bvBoard.requestFocus();
 	}
 	
 	public void setPiece( int ox, int oy, int x, int y )
 	{
 		final ShogiPiece s = this.getPiece( ox, oy );
+		String temp4 = s.getPiece();
+		String temp3 = "";
 		
 		if( s.isValidMove(ox, oy, x, y) == false || s.hasPath(board, ox, oy, x, y) == false )
 		{
-			Toast notify = Toast.makeText( this, R.string.invalid_move, Toast.LENGTH_SHORT );
+			Toast notify = Toast.makeText( this, "Invalid move", Toast.LENGTH_SHORT );
 		    notify.setGravity( Gravity.CENTER, 0, 0 );
 		    notify.show( );
 		    
@@ -177,27 +295,41 @@ public class ShogiGame extends Activity {
 				board[ ox ][ oy ] = null;
 				if( ( s.getSide( ) ? y <= 2 : y >= 6 ) && s.getPromote() != " " )
 				{
-					/* Todo: Force promote when no other legal moves */
-					AlertDialog.Builder builder = new AlertDialog.Builder( this );
-					builder.setMessage( "Promote?" )
-					       .setPositiveButton( s.getPiece() + "(No)", new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					        	   dialog.cancel();
-					           }
-					       })
-					       .setNegativeButton( s.getPromote() + "(Yes)", new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					        	   s.promote();
-					        	   setContentView( bvBoard );
-					        	   bvBoard.requestFocus();
-					           }
-					       });
-					AlertDialog alert = builder.create();
-					alert.show( );
+					if( ( s.getSide( ) ? y == 0 : y == 8 ) && ( s.getPiece( ) == "歩" || s.getPiece( ) == "香" ||
+							s.getPiece( ) == "桂" ) )
+					{
+						s.promote( );
+						temp3 = "+";
+					}
+					else if( ( s.getSide( ) ? y == 1 : y == 7 ) && (s.getPiece( ) == "桂" ) )
+					{
+						s.promote( );
+						temp3 = "+";
+					}
+					else
+					{
+						AlertDialog.Builder builder = new AlertDialog.Builder( this );
+						builder.setMessage( "Promote?" )
+						       .setPositiveButton( s.getPiece() + "(No)", new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						        	   dialog.cancel();
+						           }
+						       })
+						       .setNegativeButton( s.getPromote() + "(Yes)", new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						        	  onPromote( s );
+						           }
+						       });
+						AlertDialog alert = builder.create();
+						alert.show( );
+					}
 				}
+				
+				String temp = "-";
 				
 				if( this.getPiece( x, y ) != null )
 				{
+					temp = "x";
 					/* Todo: maybe multidimensional array to cut down on code */
 					if( turn == BLACK )
 					{
@@ -236,6 +368,15 @@ public class ShogiGame extends Activity {
 				}
 				
 				board[ x ][ y ] = s;
+				
+				String temp2 = "";
+				
+				if( s.getPromote() == " " && temp3 == "" )
+					temp2 = "+";
+				moveList += "\n" + curMove + ". " + temp2 + ( temp3 == "" ? s.getPiece() : temp4 ) + 
+				( 9 - ox ) + ( ( char )( 65 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 65 + y ) ) + temp3;
+				curMove++;
+				
 				turn = !turn;
 			}
 	}

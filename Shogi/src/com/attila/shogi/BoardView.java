@@ -192,7 +192,7 @@ public class BoardView extends View {
 	public boolean onTouchEvent(MotionEvent event) 
 	{
 		if( event.getAction( ) != MotionEvent.ACTION_DOWN )
-			return super.onTouchEvent(event);
+			return super.onTouchEvent(event);		
 		
 		select( ( int ) ( event.getX( ) / width ), ( int ) ( event.getY( ) / height ) );
 		return super.onTouchEvent(event);
