@@ -127,14 +127,24 @@ public class ShogiGame extends Activity {
 			alert.show( );
 			
 			return true;
-		case R.id.save_and_r_id:
-			/*Todo: save game */
-			finish( );
-			return true;
-		case R.id.exitg_id:
-			finish( );
-			return true;
+		case R.id.exitg_id:	
+			AlertDialog.Builder builder2 = new AlertDialog.Builder( this );
+			builder2.setMessage( "Save?" )
+			       .setPositiveButton( "No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   finish( );
+			           }
+			       })
+			       .setNegativeButton( "Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	  /* Todo: save */
+			        	  finish( );
+			           }
+			       });
+			AlertDialog alert2 = builder2.create();
+			alert2.show( );
 			
+			return true;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -157,29 +167,11 @@ public class ShogiGame extends Activity {
 	
 	public void dropPiece( int x, int y )
 	{
-		if( board[ x ][ y ] != null )
-		{
-			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
-		    notify.setGravity( Gravity.CENTER, 0, 0 );
-		    notify.show( );
-		    
-		    drop = -1;
-		    
-			return;
-		}
+		String temp = null;
 		
 		/*Todo: Ensure checkmate isn't given by dropping a pawn */
-		if( ( turn ? y == 0 : y == 8 ) && ( drop == 0 || drop == 1 || drop == 2 ) )
-		{
-			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
-		    notify.setGravity( Gravity.CENTER, 0, 0 );
-		    notify.show( );
-		    
-		    drop = -1;
-		    
-			return;
-		}	
-		else if( ( turn ? y == 1 : y == 7 ) && drop == 1 )
+		if( board[ x ][ y ] != null || ( ( turn ? y == 0 : y == 8 ) && ( drop == 0 || drop == 1 || drop == 2 ) ) 
+				|| ( ( turn ? y == 1 : y == 7 ) && drop == 1 ) )
 		{
 			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
 		    notify.setGravity( Gravity.CENTER, 0, 0 );
@@ -209,24 +201,31 @@ public class ShogiGame extends Activity {
 				}
 			}
 			board[ x ][ y ] = new ShogiPiece( "歩", turn );
+			temp = "歩";
 			break;
 		case 1:
 			board[ x ][ y ] = new ShogiPiece( "桂", turn );
+			temp = "桂";
 			break;
 		case 2:
 			board[ x ][ y ] = new ShogiPiece( "香", turn );
+			temp = "香";
 			break;
 		case 3:
 			board[ x ][ y ] = new ShogiPiece( "銀", turn );
+			temp = "銀";
 			break;
 		case 4:
 			board[ x ][ y ] = new ShogiPiece( "金", turn );
+			temp = "金";
 			break;
 		case 5:
 			board[ x ][ y ] = new ShogiPiece( "角", turn );
+			temp = "角";
 			break;
 		case 6:
 			board[ x ][ y ] = new ShogiPiece( "飛", turn );
+			temp = "飛";
 		}
 		
 		if( turn == BLACK )
@@ -234,34 +233,7 @@ public class ShogiGame extends Activity {
 		else
 			wDrop[ drop ]--;
 		
-		String temp = null;
-		
-		switch( drop )
-		{
-		case 0:
-			temp = "歩";
-			break;
-		case 1:
-			temp = "桂";
-			break;
-		case 2:
-			temp = "香";
-			break;
-		case 3:
-			temp = "銀";
-			break;
-		case 4:
-			temp = "金";
-			break;
-		case 5:
-			temp = "角";
-			break;
-		case 6:
-			temp = "飛";
-		}
-		
-		moveList += "\n" + curMove + ". " + temp + "*" + ( 9 - x ) + ( char)( 65 + y );
-		curMove++;
+		moveList += "\n" + (curMove++) + ". " + temp + "*" + ( 9 - x ) + ( char)( 97 + y );
 		
 		drop = -1;
 		turn = !turn;
@@ -330,39 +302,53 @@ public class ShogiGame extends Activity {
 				if( this.getPiece( x, y ) != null )
 				{
 					temp = "x";
-					/* Todo: maybe multidimensional array to cut down on code */
-					if( turn == BLACK )
+					if( this.getPiece( x, y ).getPiece() == "歩" || this.getPiece( x, y ).getPiece() == "と" )
 					{
-						if( this.getPiece( x, y ).getPiece() == "歩" || this.getPiece( x, y ).getPiece() == "と" )
+						if( turn == BLACK )
 							bDrop[ 0 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "桂" || this.getPiece( x, y ).getPiece() == "圭" )
-							bDrop[ 1 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "香" || this.getPiece( x, y ).getPiece() == "杏" )
-							bDrop[ 2 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "銀" || this.getPiece( x, y ).getPiece() == "全" )
-							bDrop[ 3 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "金" )
-							bDrop[ 4 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "角" || this.getPiece( x, y ).getPiece() == "馬" )
-							bDrop[ 5 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "飛" || this.getPiece( x, y ).getPiece() == "龍" )
-							bDrop[ 6 ] += 1;
-					}
-					else
-					{
-						if( this.getPiece( x, y ).getPiece() == "歩" || this.getPiece( x, y ).getPiece() == "と" )
+						else
 							wDrop[ 0 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "桂" || this.getPiece( x, y ).getPiece() == "圭" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "桂" || this.getPiece( x, y ).getPiece() == "圭" )
+					{
+						if( turn == BLACK )
+							bDrop[ 1 ] += 1;
+						else
 							wDrop[ 1 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "香" || this.getPiece( x, y ).getPiece() == "杏" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "香" || this.getPiece( x, y ).getPiece() == "杏" )
+					{
+						if( turn == BLACK )
+							bDrop[ 2 ] += 1;
+						else
 							wDrop[ 2 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "銀" || this.getPiece( x, y ).getPiece() == "全" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "銀" || this.getPiece( x, y ).getPiece() == "全" )
+					{
+						if( turn == BLACK )
+							bDrop[ 3 ] += 1;
+						else
 							wDrop[ 3 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "金" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "金" )
+					{
+						if( turn == BLACK )
+							bDrop[ 4 ] += 1;
+						else
 							wDrop[ 4 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "角" || this.getPiece( x, y ).getPiece() == "馬" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "角" || this.getPiece( x, y ).getPiece() == "馬" )
+					{
+						if( turn == BLACK )
+							bDrop[ 5 ] += 1;
+						else
 							wDrop[ 5 ] += 1;
-						else if( this.getPiece( x, y ).getPiece() == "飛" || this.getPiece( x, y ).getPiece() == "龍" )
+					}
+					else if( this.getPiece( x, y ).getPiece() == "飛" || this.getPiece( x, y ).getPiece() == "龍" )
+					{
+						if( turn == BLACK )
+							bDrop[ 6 ] += 1;
+						else
 							wDrop[ 6 ] += 1;
 					}
 				}
@@ -371,11 +357,10 @@ public class ShogiGame extends Activity {
 				
 				String temp2 = "";
 				
-				if( s.getPromote() == " " && temp3 == "" )
+				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != "玉" && s.getPiece() != "王" ) )
 					temp2 = "+";
-				moveList += "\n" + curMove + ". " + temp2 + ( temp3 == "" ? s.getPiece() : temp4 ) + 
-				( 9 - ox ) + ( ( char )( 65 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 65 + y ) ) + temp3;
-				curMove++;
+				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPiece() : temp4 ) + 
+				( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3;
 				
 				turn = !turn;
 			}

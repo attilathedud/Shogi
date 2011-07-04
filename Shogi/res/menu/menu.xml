@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
     <menu xmlns:android="http://schemas.android.com/apk/res/android">
         
-        <item android:id="@+id/dropboard_id" android:title="Drop Box"></item><item android:id="@+id/save_and_r_id" android:title="Save and Exit"></item><item android:title="Exit (without saving)" android:id="@+id/exitg_id"></item><item android:title="Move List" android:id="@+id/move_list_id"></item><item android:id="@+id/settings_id" android:title="Settings"></item>
+        <item android:id="@+id/dropboard_id" android:title="Drop Box"></item><item android:title="Move List" android:id="@+id/move_list_id"></item><item android:id="@+id/settings_id" android:title="Settings"></item><item android:id="@+id/exitg_id" android:title="Exit"></item>
         
         
         

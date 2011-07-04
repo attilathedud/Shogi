@@ -26,17 +26,16 @@ public final class R {
         public static final int cont_game_id=0x7f08000a;
         public static final int dropboard_id=0x7f08000d;
         public static final int exit_id=0x7f08000c;
-        public static final int exitg_id=0x7f08000f;
+        public static final int exitg_id=0x7f080010;
         public static final int gold_id=0x7f080005;
         public static final int keypad=0x7f080000;
         public static final int knight_id=0x7f080002;
         public static final int lance_id=0x7f080003;
-        public static final int move_list_id=0x7f080010;
+        public static final int move_list_id=0x7f08000e;
         public static final int new_game_id=0x7f080009;
         public static final int pawn_id=0x7f080001;
         public static final int rook_id=0x7f080007;
-        public static final int save_and_r_id=0x7f08000e;
-        public static final int settings_id=0x7f080011;
+        public static final int settings_id=0x7f08000f;
         public static final int silver_id=0x7f080004;
         public static final int textView1=0x7f080008;
     }
