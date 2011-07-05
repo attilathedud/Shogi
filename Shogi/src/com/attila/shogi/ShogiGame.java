@@ -1,5 +1,9 @@
 package com.attila.shogi;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,9 +32,44 @@ public class ShogiGame extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);	
 		
-		initBoard( );
+		Bundle extras = getIntent( ).getExtras();
+		
+		if( extras == null )
+			initBoard( );
+		else
+		{	
+			moveList = extras.getString( "MoveList" ).trim();
+			
+			if( moveList.isEmpty() )
+			{
+				curMove = 1;
+			}
+			else if( moveList.lastIndexOf( "\n") == -1 && !moveList.isEmpty())
+			{
+				curMove = 2;
+				turn = false;
+			}
+			else
+			{
+				String lastLine = moveList.substring(moveList.lastIndexOf( "\n" ) );
+				lastLine = lastLine.substring(0, lastLine.indexOf( "." ) );
+				curMove = Integer.parseInt( lastLine.trim() ) + 1;
+				
+				if( curMove % 2 == 0)
+					turn = false;
+			}
+			
+			String tempBoard = extras.getString( "CurBoard" ).trim();
+			char [ ] buffer = new char[ 100 ];
+			
+			tempBoard.getChars(0, tempBoard.length(), buffer, 0);
+			
+			/* Todo: create board */
+			
+			//initBoard( );
+		}
 		
 		bvBoard = new BoardView( this );
 		final Context k = this;
@@ -102,6 +141,36 @@ public class ShogiGame extends Activity {
 		return result;
 	}
 
+	public void saveGame( )
+	{
+		String gameBoard = "";
+		
+		for( int i = 0; i < 9; i++ )
+		{
+			for( int j = 0; j < 9; j++ )
+			{
+				gameBoard += ( board[ j ][ i ] == null ? " " : board[ j ][ i ].getPiece() );
+			}
+			
+			gameBoard += "\n";
+		}
+		
+		gameBoard += "END_OF_GAMEBOARD";
+		
+		try {
+			FileOutputStream fos = openFileOutput("Game 1", Context.MODE_PRIVATE);
+			fos.write( gameBoard.getBytes() );
+			fos.write( (moveList + " ").getBytes() );
+			fos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
@@ -137,7 +206,7 @@ public class ShogiGame extends Activity {
 			       })
 			       .setNegativeButton( "Yes", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
-			        	  /* Todo: save */
+			        	  saveGame( );
 			        	  finish( );
 			           }
 			       });
@@ -233,7 +302,7 @@ public class ShogiGame extends Activity {
 		else
 			wDrop[ drop ]--;
 		
-		moveList += "\n" + (curMove++) + ". " + temp + "*" + ( 9 - x ) + ( char)( 97 + y );
+		moveList += "\n" + (curMove++) + ". " + temp + "*" + ( 9 - x ) + ( char)( 97 + y ) + " ";
 		
 		drop = -1;
 		turn = !turn;
@@ -282,6 +351,7 @@ public class ShogiGame extends Activity {
 					{
 						AlertDialog.Builder builder = new AlertDialog.Builder( this );
 						builder.setMessage( "Promote?" )
+							   .setCancelable( false )
 						       .setPositiveButton( s.getPiece() + "(No)", new DialogInterface.OnClickListener() {
 						           public void onClick(DialogInterface dialog, int id) {
 						        	   dialog.cancel();
@@ -357,10 +427,11 @@ public class ShogiGame extends Activity {
 				
 				String temp2 = "";
 				
-				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != "玉" && s.getPiece() != "王" ) )
+				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != "玉" && s.getPiece() != "王" 
+					&& s.getPiece() != "金") )
 					temp2 = "+";
-				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPiece() : temp4 ) + 
-				( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3;
+				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPiece( ) : temp4 ) + 
+				( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3 + " ";
 				
 				turn = !turn;
 			}

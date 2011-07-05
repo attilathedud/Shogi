@@ -96,7 +96,7 @@ public class ShogiPiece {
 			if( Math.abs( x - ox ) != Math.abs( y - oy ) )
 				return false;
 		}
-		else if( piece == "香" )
+		else if( piece == "香" ) 
 		{
 			if( x != ox || ( side ? y > oy : y < oy ) )
 				return false;
