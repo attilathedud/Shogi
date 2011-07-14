@@ -41,12 +41,14 @@ public class ShogiGame extends Activity {
 		else
 		{	
 			moveList = extras.getString( "MoveList" ).trim();
-			
-			if( moveList.isEmpty() )
+			// String.isEmpty unsupported in API 8
+			//if( moveList.isEmpty() )
+			if( moveList.length() == 0)
 			{
 				curMove = 1;
 			}
-			else if( moveList.lastIndexOf( "\n") == -1 && !moveList.isEmpty())
+			//else if( moveList.lastIndexOf( "\n") == -1 && !moveList.isEmpty())
+			else if( moveList.lastIndexOf( "\n") == -1 && moveList.length() != 0)
 			{
 				curMove = 2;
 				turn = false;
