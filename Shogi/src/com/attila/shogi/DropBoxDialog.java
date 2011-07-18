@@ -24,8 +24,8 @@ public class DropBoxDialog extends Dialog {
 		
 		setContentView( R.layout.dropbox );
 		
-		setTitle( drop[ 0 ] + "歩, " + drop[ 1 ] + "桂, " + drop[ 2 ] + "香, " + drop[ 3 ] + "銀, " +
-				drop[ 4 ] + "金, " + drop[ 5 ] + "角, " + drop[ 6 ] + "飛" );
+		setTitle( drop[ 0 ] + "P, " + drop[ 1 ] + "Kn, " + drop[ 2 ] + "L, " + drop[ 3 ] + "S, " +
+				drop[ 4 ] + "G, " + drop[ 5 ] + "B, " + drop[ 6 ] + "R" );
 		
 		pieces[ 0 ] = findViewById( R.id.pawn_id );
 		pieces[ 1 ] = findViewById( R.id.knight_id );

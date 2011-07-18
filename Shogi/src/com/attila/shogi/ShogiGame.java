@@ -41,14 +41,12 @@ public class ShogiGame extends Activity {
 		else
 		{	
 			moveList = extras.getString( "MoveList" ).trim();
-			// String.isEmpty unsupported in API 8
-			//if( moveList.isEmpty() )
-			if( moveList.length() == 0)
+			
+			if( moveList != null && moveList.length() == 0)
 			{
 				curMove = 1;
 			}
-			//else if( moveList.lastIndexOf( "\n") == -1 && !moveList.isEmpty())
-			else if( moveList.lastIndexOf( "\n") == -1 && moveList.length() != 0)
+			else if( moveList != null && moveList.lastIndexOf( "\n") == -1 && moveList.length() != 0)
 			{
 				curMove = 2;
 				turn = false;
@@ -63,10 +61,10 @@ public class ShogiGame extends Activity {
 					turn = false;
 			}
 			
-			String tempBoard = extras.getString( "CurBoard" ).trim();
-			char [ ] buffer = new char[ 100 ];
+			//String tempBoard = extras.getString( "CurBoard" ).trim();
+			//char [ ] buffer = new char[ 100 ];
 			
-			tempBoard.getChars(0, tempBoard.length(), buffer, 0);
+			//tempBoard.getChars(0, tempBoard.length(), buffer, 0);
 			
 			/* Todo: create board */
 			
@@ -92,33 +90,33 @@ public class ShogiGame extends Activity {
 	{
 		for( int j = 0; j < 9; j++ )
 		{
-			board[ j ][ 2 ] = new ShogiPiece( "歩", WHITE );
-			board[ j ][ 6 ] = new ShogiPiece( "歩", BLACK );
+			board[ j ][ 2 ] = new ShogiPiece( PieceEnum.P_PAWN, WHITE );
+			board[ j ][ 6 ] = new ShogiPiece( PieceEnum.P_PAWN, BLACK );
 		}
 		
-		board[ 0 ][ 0 ] = new ShogiPiece( "香", WHITE );
-		board[ 1 ][ 0 ] = new ShogiPiece( "桂", WHITE );
-		board[ 8 ][ 0 ] = new ShogiPiece( "香", WHITE );
-		board[ 7 ][ 0 ] = new ShogiPiece( "桂", WHITE );
-		board[ 2 ][ 0 ] = new ShogiPiece( "銀", WHITE );
-		board[ 6 ][ 0 ] = new ShogiPiece( "銀", WHITE );
-		board[ 3 ][ 0 ] = new ShogiPiece( "金", WHITE );
-		board[ 5 ][ 0 ] = new ShogiPiece( "金", WHITE );
-		board[ 4 ][ 0 ] = new ShogiPiece( "王", WHITE );
-		board[ 1 ][ 1 ] = new ShogiPiece( "飛", WHITE );
-		board[ 7 ][ 1 ] = new ShogiPiece( "角", WHITE );
+		board[ 0 ][ 0 ] = new ShogiPiece( PieceEnum.P_LANCE, WHITE );
+		board[ 1 ][ 0 ] = new ShogiPiece( PieceEnum.P_KNIGHT, WHITE );
+		board[ 8 ][ 0 ] = new ShogiPiece( PieceEnum.P_LANCE, WHITE );
+		board[ 7 ][ 0 ] = new ShogiPiece( PieceEnum.P_KNIGHT, WHITE );
+		board[ 2 ][ 0 ] = new ShogiPiece( PieceEnum.P_SILVER, WHITE );
+		board[ 6 ][ 0 ] = new ShogiPiece( PieceEnum.P_SILVER, WHITE );
+		board[ 3 ][ 0 ] = new ShogiPiece( PieceEnum.P_GOLD, WHITE );
+		board[ 5 ][ 0 ] = new ShogiPiece( PieceEnum.P_GOLD, WHITE );
+		board[ 4 ][ 0 ] = new ShogiPiece( PieceEnum.P_KING, WHITE );
+		board[ 1 ][ 1 ] = new ShogiPiece( PieceEnum.P_ROOK, WHITE );
+		board[ 7 ][ 1 ] = new ShogiPiece( PieceEnum.P_BISHOP, WHITE );
 		
-		board[ 0 ][ 8 ] = new ShogiPiece( "香", BLACK );
-		board[ 8 ][ 8 ] = new ShogiPiece( "香", BLACK );
-		board[ 1 ][ 8 ] = new ShogiPiece( "桂", BLACK );
-		board[ 7 ][ 8 ] = new ShogiPiece( "桂", BLACK );
-		board[ 2 ][ 8 ] = new ShogiPiece( "銀", BLACK );
-		board[ 6 ][ 8 ] = new ShogiPiece( "銀", BLACK );
-		board[ 3 ][ 8 ] = new ShogiPiece( "金", BLACK );
-		board[ 5 ][ 8 ] = new ShogiPiece( "金", BLACK );
-		board[ 4 ][ 8 ] = new ShogiPiece( "玉", BLACK );
-		board[ 1 ][ 7 ] = new ShogiPiece( "角", BLACK );
-		board[ 7 ][ 7 ] = new ShogiPiece( "飛", BLACK );
+		board[ 0 ][ 8 ] = new ShogiPiece( PieceEnum.P_LANCE, BLACK );
+		board[ 8 ][ 8 ] = new ShogiPiece( PieceEnum.P_LANCE, BLACK );
+		board[ 1 ][ 8 ] = new ShogiPiece( PieceEnum.P_KNIGHT, BLACK );
+		board[ 7 ][ 8 ] = new ShogiPiece( PieceEnum.P_KNIGHT, BLACK );
+		board[ 2 ][ 8 ] = new ShogiPiece( PieceEnum.P_SILVER, BLACK );
+		board[ 6 ][ 8 ] = new ShogiPiece( PieceEnum.P_SILVER, BLACK );
+		board[ 3 ][ 8 ] = new ShogiPiece( PieceEnum.P_GOLD, BLACK );
+		board[ 5 ][ 8 ] = new ShogiPiece( PieceEnum.P_GOLD, BLACK );
+		board[ 4 ][ 8 ] = new ShogiPiece( PieceEnum.P_OPPO_KING, BLACK );
+		board[ 1 ][ 7 ] = new ShogiPiece( PieceEnum.P_BISHOP, BLACK );
+		board[ 7 ][ 7 ] = new ShogiPiece( PieceEnum.P_ROOK, BLACK );
 	}
 	
 	@Override
@@ -130,7 +128,7 @@ public class ShogiGame extends Activity {
 			drop = -1;
 		else
 		{
-			
+			super.onBackPressed();
 		}
 		//super.onBackPressed();
 	}
@@ -260,7 +258,7 @@ public class ShogiGame extends Activity {
 			{
 				if( board[ x ][ i ] == null )
 					continue;
-				else if( board[ x ][ i ].getPiece() == "歩" && board[ x ][ i ].getSide( ) == turn )
+				else if( board[ x ][ i ].getPiece() == PieceEnum.P_PAWN && board[ x ][ i ].getSide( ) == turn )
 				{
 					Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
 				    notify.setGravity( Gravity.CENTER, 0, 0 );
@@ -271,32 +269,32 @@ public class ShogiGame extends Activity {
 					return;
 				}
 			}
-			board[ x ][ y ] = new ShogiPiece( "歩", turn );
-			temp = "歩";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, turn );
+			temp = "P";
 			break;
 		case 1:
-			board[ x ][ y ] = new ShogiPiece( "桂", turn );
-			temp = "桂";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, turn );
+			temp = "Kn";
 			break;
 		case 2:
-			board[ x ][ y ] = new ShogiPiece( "香", turn );
-			temp = "香";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, turn );
+			temp = "L";
 			break;
 		case 3:
-			board[ x ][ y ] = new ShogiPiece( "銀", turn );
-			temp = "銀";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, turn );
+			temp = "S";
 			break;
 		case 4:
-			board[ x ][ y ] = new ShogiPiece( "金", turn );
-			temp = "金";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, turn );
+			temp = "G";
 			break;
 		case 5:
-			board[ x ][ y ] = new ShogiPiece( "角", turn );
-			temp = "角";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, turn );
+			temp = "B";
 			break;
 		case 6:
-			board[ x ][ y ] = new ShogiPiece( "飛", turn );
-			temp = "飛";
+			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, turn );
+			temp = "R";
 		}
 		
 		if( turn == BLACK )
@@ -321,7 +319,7 @@ public class ShogiGame extends Activity {
 	public void setPiece( int ox, int oy, int x, int y )
 	{
 		final ShogiPiece s = this.getPiece( ox, oy );
-		String temp4 = s.getPiece();
+		String temp4 = s.getPieceHistoryName();
 		String temp3 = "";
 		
 		if( s.isValidMove(ox, oy, x, y) == false || s.hasPath(board, ox, oy, x, y) == false )
@@ -338,13 +336,13 @@ public class ShogiGame extends Activity {
 				board[ ox ][ oy ] = null;
 				if( ( s.getSide( ) ? y <= 2 : y >= 6 ) && s.getPromote() != " " )
 				{
-					if( ( s.getSide( ) ? y == 0 : y == 8 ) && ( s.getPiece( ) == "歩" || s.getPiece( ) == "香" ||
-							s.getPiece( ) == "桂" ) )
+					if( ( s.getSide( ) ? y == 0 : y == 8 ) && ( s.getPiece( ) == PieceEnum.P_PAWN || 
+							s.getPiece( ) == PieceEnum.P_LANCE || s.getPiece( ) == PieceEnum.P_KNIGHT ) )
 					{
 						s.promote( );
 						temp3 = "+";
 					}
-					else if( ( s.getSide( ) ? y == 1 : y == 7 ) && (s.getPiece( ) == "桂" ) )
+					else if( ( s.getSide( ) ? y == 1 : y == 7 ) && (s.getPiece( ) == PieceEnum.P_KNIGHT ) )
 					{
 						s.promote( );
 						temp3 = "+";
@@ -354,7 +352,7 @@ public class ShogiGame extends Activity {
 						AlertDialog.Builder builder = new AlertDialog.Builder( this );
 						builder.setMessage( "Promote?" )
 							   .setCancelable( false )
-						       .setPositiveButton( s.getPiece() + "(No)", new DialogInterface.OnClickListener() {
+						       .setPositiveButton( s.getPieceTempName() + "(No)", new DialogInterface.OnClickListener() {
 						           public void onClick(DialogInterface dialog, int id) {
 						        	   dialog.cancel();
 						           }
@@ -374,65 +372,55 @@ public class ShogiGame extends Activity {
 				if( this.getPiece( x, y ) != null )
 				{
 					temp = "x";
-					if( this.getPiece( x, y ).getPiece() == "歩" || this.getPiece( x, y ).getPiece() == "と" )
+					
+					int tempDrop = 0;
+					
+					switch( this.getPiece( x, y ).getPiece() )
 					{
-						if( turn == BLACK )
-							bDrop[ 0 ] += 1;
-						else
-							wDrop[ 0 ] += 1;
+					case P_PAWN:
+					case P_PRO_PAWN:
+						tempDrop = 0;
+						break;
+					case P_KNIGHT:
+					case P_PRO_KNIGHT:
+						tempDrop = 1;
+						break;
+					case P_LANCE:
+					case P_PRO_LANCE:
+						tempDrop = 2;
+						break;
+					case P_SILVER:
+					case P_PRO_SILVER:
+						tempDrop = 3;
+						break;
+					case P_GOLD:
+						tempDrop = 4;
+						break;
+					case P_BISHOP:
+					case P_PRO_BISHOP:
+						tempDrop = 5;
+						break;
+					case P_ROOK:
+					case P_PRO_ROOK:
+						tempDrop = 6;
+						break;
 					}
-					else if( this.getPiece( x, y ).getPiece() == "桂" || this.getPiece( x, y ).getPiece() == "圭" )
-					{
-						if( turn == BLACK )
-							bDrop[ 1 ] += 1;
-						else
-							wDrop[ 1 ] += 1;
-					}
-					else if( this.getPiece( x, y ).getPiece() == "香" || this.getPiece( x, y ).getPiece() == "杏" )
-					{
-						if( turn == BLACK )
-							bDrop[ 2 ] += 1;
-						else
-							wDrop[ 2 ] += 1;
-					}
-					else if( this.getPiece( x, y ).getPiece() == "銀" || this.getPiece( x, y ).getPiece() == "全" )
-					{
-						if( turn == BLACK )
-							bDrop[ 3 ] += 1;
-						else
-							wDrop[ 3 ] += 1;
-					}
-					else if( this.getPiece( x, y ).getPiece() == "金" )
-					{
-						if( turn == BLACK )
-							bDrop[ 4 ] += 1;
-						else
-							wDrop[ 4 ] += 1;
-					}
-					else if( this.getPiece( x, y ).getPiece() == "角" || this.getPiece( x, y ).getPiece() == "馬" )
-					{
-						if( turn == BLACK )
-							bDrop[ 5 ] += 1;
-						else
-							wDrop[ 5 ] += 1;
-					}
-					else if( this.getPiece( x, y ).getPiece() == "飛" || this.getPiece( x, y ).getPiece() == "龍" )
-					{
-						if( turn == BLACK )
-							bDrop[ 6 ] += 1;
-						else
-							wDrop[ 6 ] += 1;
-					}
+					
+					if( turn == BLACK )
+						bDrop[ tempDrop ] += 1;
+					else
+						wDrop[ tempDrop ] += 1;
+					
 				}
 				
 				board[ x ][ y ] = s;
 				
 				String temp2 = "";
 				
-				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != "玉" && s.getPiece() != "王" 
-					&& s.getPiece() != "金") )
+				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != PieceEnum.P_KING && 
+						s.getPiece() != PieceEnum.P_OPPO_KING && s.getPiece() != PieceEnum.P_GOLD) )
 					temp2 = "+";
-				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPiece( ) : temp4 ) + 
+				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPieceHistoryName( ) : temp4 ) + 
 				( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3 + " ";
 				
 				turn = !turn;

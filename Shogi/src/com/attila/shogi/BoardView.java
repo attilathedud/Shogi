@@ -144,8 +144,8 @@ public class BoardView extends View {
 				else
 					foreground.setColor( Color.WHITE );
 				
-				canvas.drawText( this.curGame.getPiece( i, j ).getPiece(), i * width + x, j * height + y, foreground );
-				
+				canvas.drawText( this.curGame.getPiece( i, j ).getPieceTempName(), i * width + x, j * height + y, foreground );
+//				canvas.drawBitmap( BitmapFactory.decodeResource( getResources( ), R.drawable.s_pawn ), null, selRect, null );
 			}
 		}
 		
@@ -161,32 +161,9 @@ public class BoardView extends View {
 		getRect( selX, selY, selRect );
 		
 		canvas.drawRect( selRect, selected );
-		
+				
 		super.onDraw(canvas);
 	}
-
-	/*@Override
-	Todo: ensure that user must press enter
-	public boolean onKeyDown(int keyCode, KeyEvent event) 
-	{
-		switch( keyCode )
-		{
-		case KeyEvent.KEYCODE_DPAD_LEFT:
-			select( selX - 1, selY );
-			break;
-		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			select( selX + 1, selY );
-			break;
-		case KeyEvent.KEYCODE_DPAD_UP:
-			select( selX, selY - 1 );
-			break;
-		case KeyEvent.KEYCODE_DPAD_DOWN:
-			select( selX, selY + 1 );
-			break;
-		}
-		
-		return super.onKeyDown(keyCode, event);
-	}*/
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) 

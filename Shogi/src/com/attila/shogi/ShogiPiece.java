@@ -1,199 +1,254 @@
 package com.attila.shogi;
 
-
 public class ShogiPiece {
-	
-	private String piece;
-	private boolean side;	//true = black, false = white
 
-	public ShogiPiece( String piece, boolean side )
-	{
+	private PieceEnum piece;
+	private boolean side; // true = black, false = white
+
+	public ShogiPiece(PieceEnum piece, boolean side) {
 		this.piece = piece;
 		this.side = side;
 	}
-	
-	public String getPiece( )
-	{
+
+	public PieceEnum getPiece() {
 		return this.piece;
 	}
-	
-	public boolean getSide( )
-	{
+
+	public String getPieceHistoryName() {
+		switch (piece) {
+		case P_PAWN:
+		case P_PRO_PAWN:
+			return "P";
+		case P_LANCE:
+		case P_PRO_LANCE:
+			return "L";
+		case P_KNIGHT:
+		case P_PRO_KNIGHT:
+			return "Kn";
+		case P_SILVER:
+		case P_PRO_SILVER:
+			return "S";
+		case P_GOLD:
+			return "G";
+		case P_KING:
+		case P_OPPO_KING:
+			return "K";
+		case P_BISHOP:
+		case P_PRO_BISHOP:
+			return "B";
+		case P_ROOK:
+		case P_PRO_ROOK:
+			return "R";
+		default:
+			return "?";
+		}
+	}
+
+	/* Todo: To test while lacking images */
+	public String getPieceTempName() {
+		switch (piece) {
+		case P_PAWN:
+			return "P";
+		case P_PRO_PAWN:
+			return "P*";
+		case P_LANCE:
+			return "L";
+		case P_PRO_LANCE:
+			return "L*";
+		case P_KNIGHT:
+			return "Kn";
+		case P_PRO_KNIGHT:
+			return "Kn*";
+		case P_SILVER:
+			return "S";
+		case P_PRO_SILVER:
+			return "S*";
+		case P_GOLD:
+			return "G";
+		case P_KING:
+			return "K";
+		case P_OPPO_KING:
+			return "OK";
+		case P_BISHOP:
+			return "B";
+		case P_PRO_BISHOP:
+			return "B*";
+		case P_ROOK:
+			return "R";
+		case P_PRO_ROOK:
+			return "R*";
+		default:
+			return "?";
+		}
+	}
+
+	public boolean getSide() {
 		return this.side;
 	}
-	
-	public void promote( )
-	{
-		if( piece == "歩" )
-			piece = "と";
-		else if( piece == "香" )
-			piece = "杏";
-		else if( piece == "銀" )
-			piece = "全";
-		else if( piece == "桂" )
-			piece = "圭";
-		else if( piece == "角" )
-			piece = "馬";
-		else if( piece == "飛" )
-			piece = "龍";
+
+	public void promote() {
+		switch (piece) {
+		case P_PAWN:
+			piece = PieceEnum.P_PRO_PAWN;
+			break;
+		case P_LANCE:
+			piece = PieceEnum.P_PRO_LANCE;
+			break;
+		case P_SILVER:
+			piece = PieceEnum.P_PRO_SILVER;
+			break;
+		case P_KNIGHT:
+			piece = PieceEnum.P_PRO_KNIGHT;
+			break;
+		case P_BISHOP:
+			piece = PieceEnum.P_PRO_BISHOP;
+			break;
+		case P_ROOK:
+			piece = PieceEnum.P_PRO_ROOK;
+			break;
+		}
 	}
-	
-	public String getPromote( )
-	{
-		if( piece == "歩" )
-			return "と";
-		else if( piece == "香" )
-			return "杏";
-		else if( piece == "銀" )
-			return "全";
-		else if( piece == "桂" )
-			return "圭";
-		else if( piece == "角" )
-			return "馬";
-		else if( piece == "飛" )
-			return "龍";
-		else
+
+	public String getPromote() {
+		switch (piece) {
+		case P_PAWN:
+			return "P*";
+		case P_LANCE:
+			return "L*";
+		case P_SILVER:
+			return "S*";
+		case P_KNIGHT:
+			return "Kn*";
+		case P_BISHOP:
+			return "B*";
+		case P_ROOK:
+			return "R*";
+		default:
 			return " ";
+		}
 	}
-	
-	/*Todo check for revealing check*/
-	public boolean isValidMove( int ox, int oy, int x, int y )
-	{
-		if( piece == "歩" )
-		{
-			if( x != ox || (side ? y > oy : y < oy) || (side ? y < oy - 1 : y > oy + 1) )
+
+	/* Todo check for revealing check */
+	public boolean isValidMove(int ox, int oy, int x, int y) {
+		switch (piece) {
+		case P_PAWN:
+			if (x != ox || (side ? y > oy : y < oy)
+					|| (side ? y < oy - 1 : y > oy + 1))
 				return false;
-		}
-		else if( piece == "玉" || piece == "王" )
-		{
-			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) )
+			break;
+		case P_KING:
+		case P_OPPO_KING:
+			if ((x > ox ? x > ox + 1 : x < ox - 1)
+					|| (y > oy ? y > oy + 1 : y < oy - 1))
 				return false;
-		}
-		else if( piece == "金" || piece == "と" || piece == "杏" || piece == "全" || piece == "圭" )
-		{
-			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) ||
-					( x != ox && ( side ? y == oy + 1 : y == oy - 1 ) ) )
+			break;
+		case P_GOLD:
+		case P_PRO_PAWN:
+		case P_PRO_LANCE:
+		case P_PRO_SILVER:
+		case P_PRO_KNIGHT:
+			if ((x > ox ? x > ox + 1 : x < ox - 1)
+					|| (y > oy ? y > oy + 1 : y < oy - 1)
+					|| (x != ox && (side ? y == oy + 1 : y == oy - 1)))
 				return false;
-		}
-		else if( piece == "銀" )
-		{
-			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) || 
-					( y == oy && x != ox ) || ( x == ox && ( side ? y == oy + 1 : y == oy - 1 ) ) )
+			break;
+		case P_SILVER:
+			if ((x > ox ? x > ox + 1 : x < ox - 1)
+					|| (y > oy ? y > oy + 1 : y < oy - 1)
+					|| (y == oy && x != ox)
+					|| (x == ox && (side ? y == oy + 1 : y == oy - 1)))
 				return false;
-		}
-		else if( piece == "桂" )
-		{
-			if( ( x > ox ? x != ox + 1 : x != ox - 1 ) || (side ? y != oy - 2 : y != oy + 2 ) )
+			break;
+		case P_KNIGHT:
+			if ((x > ox ? x != ox + 1 : x != ox - 1)
+					|| (side ? y != oy - 2 : y != oy + 2))
 				return false;
-		}
-		else if( piece == "飛" )
-		{
-			if( x != ox && y != oy )
+			break;
+		case P_ROOK:
+			if (x != ox && y != oy)
 				return false;
-		}
-		else if( piece == "角" )
-		{
-			if( Math.abs( x - ox ) != Math.abs( y - oy ) )
+			break;
+		case P_BISHOP:
+			if (Math.abs(x - ox) != Math.abs(y - oy))
 				return false;
-		}
-		else if( piece == "香" ) 
-		{
-			if( x != ox || ( side ? y > oy : y < oy ) )
+			break;
+		case P_LANCE:
+			if (x != ox || (side ? y > oy : y < oy))
 				return false;
-		}
-		else if( piece == "馬" )
-		{
-			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) )
-			{
-				if( Math.abs( x - ox ) != Math.abs( y - oy ) )
+			break;
+		case P_PRO_BISHOP:
+			if ((x > ox ? x > ox + 1 : x < ox - 1)
+					|| (y > oy ? y > oy + 1 : y < oy - 1)) {
+				if (Math.abs(x - ox) != Math.abs(y - oy))
 					return false;
 			}
-		}
-		else if( piece == "龍" )
-		{
-			if( ( x > ox ? x > ox + 1 : x < ox - 1 ) || ( y > oy ? y > oy + 1 : y < oy - 1 ) )
-			{
-				if( x != ox && y != oy )
+			break;
+		case P_PRO_ROOK:
+			if ((x > ox ? x > ox + 1 : x < ox - 1)
+					|| (y > oy ? y > oy + 1 : y < oy - 1)) {
+				if (x != ox && y != oy)
 					return false;
 			}
+			break;
 		}
-		
+
 		return true;
 	}
-	
-	public boolean hasPath( ShogiPiece board[ ][ ], int ox, int oy, int x, int y )
-	{
-		if( piece == "飛" || piece == "龍" )
-		{
-			if( x != ox )
-			{
-				for( int i = Math.min( x, ox) + 1; i < Math.max( x, ox ); i++ )
-				{
-					if( board[ i ][ y ] != null )
+
+	public boolean hasPath(ShogiPiece board[][], int ox, int oy, int x, int y) {
+		switch (piece) {
+		case P_ROOK:
+		case P_PRO_ROOK:
+			if (x != ox) {
+				for (int i = Math.min(x, ox) + 1; i < Math.max(x, ox); i++) {
+					if (board[i][y] != null)
 						return false;
 				}
 			}
-			if( y != oy )
-			{
-				for( int i = Math.min( y, oy ) + 1; i < Math.max( y, oy ); i++ )
-				{
-					if( board[ x ][ i ] != null )
+			if (y != oy) {
+				for (int i = Math.min(y, oy) + 1; i < Math.max(y, oy); i++) {
+					if (board[x][i] != null)
 						return false;
 				}
 			}
-		}
-		else if( piece == "角" || piece == "馬" )
-		{
-			/*Todo: make less ugly */
-			if( x > ox )
-			{
-				if( y > oy )
-				{
-					for( int i = ox + 1, j = oy + 1; i < x; i++, j++ )
-					{
-						if( board[ i ][ j ] != null )
+			break;
+		case P_BISHOP:
+		case P_PRO_BISHOP:
+			/* Todo: make less ugly */
+			if (x > ox) {
+				if (y > oy) {
+					for (int i = ox + 1, j = oy + 1; i < x; i++, j++) {
+						if (board[i][j] != null)
+							return false;
+					}
+				} else {
+					for (int i = ox + 1, j = oy - 1; i < x; i++, j--) {
+						if (board[i][j] != null)
 							return false;
 					}
 				}
-				else
-				{
-					for( int i = ox + 1, j = oy - 1; i < x; i++, j-- )
-					{
-						if( board[ i ][ j ] != null )
+			} else {
+				if (y > oy) {
+					for (int i = ox - 1, j = oy + 1; i > x; i--, j++) {
+						if (board[i][j] != null)
 							return false;
 					}
-				}
-			}
-			else
-			{
-				if( y > oy )
-				{
-					for( int i = ox - 1, j = oy + 1; i > x; i--, j++ )
-					{
-						if( board[ i ][ j ] != null )
-							return false;
-					}
-				}
-				else
-				{
-					for( int i = ox - 1, j = oy - 1; i > x; i--, j-- )
-					{
-						if( board[ i ][ j ] != null )
+				} else {
+					for (int i = ox - 1, j = oy - 1; i > x; i--, j--) {
+						if (board[i][j] != null)
 							return false;
 					}
 				}
 			}
-		}
-		else if( piece == "香" )
-		{
-			for( int i = Math.min( y, oy ) + 1; i < Math.max( y, oy ); i++ )
-			{
-				if( board[ x ][ i ] != null )
+			break;
+		case P_LANCE:
+			for (int i = Math.min(y, oy) + 1; i < Math.max(y, oy); i++) {
+				if (board[x][i] != null)
 					return false;
 			}
+			break;
 		}
-		
+
 		return true;
 	}
-	
 }
