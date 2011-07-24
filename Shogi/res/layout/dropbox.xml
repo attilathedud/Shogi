@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/keypad" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:stretchColumns="*" >
+    <TableRow>
+        <Button android:text="P" android:id="@+id/pawn_id"></Button>
+        <Button android:text="Kn" android:id="@+id/knight_id"></Button>
+        <Button android:text="L" android:id="@+id/lance_id"></Button>
+    </TableRow>
+    <TableRow>
+        <Button android:text="S" android:id="@+id/silver_id"></Button>
+        <Button android:text="G" android:id="@+id/gold_id"></Button>
+        <Button android:text="B" android:id="@+id/bishop_id"></Button>
+    </TableRow>
+    <TableRow>
+        <Button android:text="R" android:id="@+id/rook_id"></Button>
+    </TableRow>
+    <TableRow>
+        <TextView android:text="Opposing" ></TextView>
+    </TableRow>
 	<TableRow>
-		<Button android:text="歩/P" android:id="@+id/pawn_id"> </Button>
-		<Button android:text="桂/Kn" android:id="@+id/knight_id"> </Button>
-		<Button android:text="香/L" android:id="@+id/lance_id"> </Button>
+		<Button android:text="P" android:clickable="false" android:enabled="false" android:id="@+id/pawn_id_2"> </Button>
+		<Button android:text="Kn" android:id="@+id/knight_id_2" android:clickable="false" android:enabled="false"> </Button>
+		<Button android:text="L" android:id="@+id/lance_id_2" android:clickable="false" android:enabled="false"> </Button>
 	</TableRow>
 	<TableRow>
-		<Button android:text="銀/S" android:id="@+id/silver_id"> </Button>
-		<Button android:text="金/G" android:id="@+id/gold_id"> </Button>
-		<Button android:text="角/B" android:id="@+id/bishop_id"> </Button>
+		<Button android:text="S" android:id="@+id/silver_id_2" android:clickable="false" android:enabled="false"> </Button>
+		<Button android:text="G" android:id="@+id/gold_id_2" android:clickable="false" android:enabled="false"> </Button>
+		<Button android:text="B" android:id="@+id/bishop_id_2" android:clickable="false" android:enabled="false"> </Button>
 	</TableRow>
 	<TableRow>
-		<Button android:text="飛/R" android:id="@+id/rook_id"></Button>
+		<Button android:text="R" android:id="@+id/rook_id_2" android:clickable="false" android:enabled="false"></Button>
 	</TableRow>
 </TableLayout>

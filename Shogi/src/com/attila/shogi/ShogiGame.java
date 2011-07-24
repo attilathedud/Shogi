@@ -61,13 +61,49 @@ public class ShogiGame extends Activity {
 					turn = false;
 			}
 			
-			//String tempBoard = extras.getString( "CurBoard" ).trim();
-			//char [ ] buffer = new char[ 100 ];
+			String tempBoard = extras.getString( "CurBoard" ).trim();
+			char [ ] buffer = new char[ 200 ];
+			boolean tempSide = BLACK;
+			int x = 0, y = 0;
+
+			tempBoard.getChars(0, tempBoard.length(), buffer, 0);
 			
-			//tempBoard.getChars(0, tempBoard.length(), buffer, 0);
+			/* Todo: Fix sides, import drop board */
+			for( int i = 0; i < buffer.length - 1; i ++ )
+			{
+				if( buffer[ i ] == '?' )
+				{
+					
+				}
+				else
+				{				
+					if( buffer[ i ] == 'L' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, tempSide );
+					else if( buffer[ i ] == 'N' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, tempSide );
+					else if( buffer[ i ] == 'S' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, tempSide );
+					else if( buffer[ i ] == 'G' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, tempSide );
+					else if( buffer[ i ] == 'K' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KING, tempSide );
+					else if( buffer[ i ] == 'P' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, tempSide );
+					else if( buffer[ i ] == 'B' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, tempSide );
+					else if( buffer[ i ] == 'R' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, tempSide );
+				}
+				
+				x++;
+				if( x == 10 )
+				{
+					x = 0;
+					y++;
+				}
+			}
 			
-			/* Todo: create board */
-			
+
 			//initBoard( );
 		}
 		
@@ -77,7 +113,7 @@ public class ShogiGame extends Activity {
 			
 			public boolean onLongClick( View v )
 			{
-				Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ) );
+				Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
 				d.show( );
 				return true;
 			}
@@ -149,7 +185,8 @@ public class ShogiGame extends Activity {
 		{
 			for( int j = 0; j < 9; j++ )
 			{
-				gameBoard += ( board[ j ][ i ] == null ? " " : board[ j ][ i ].getPiece() );
+				gameBoard += ( board[ j ][ i ] == null ? "?" : ( board[ j ][ i ].getPieceHistoryName() == "Kn" )
+					? 'N' : board[ j ][ i ].getPieceHistoryName());
 			}
 			
 			gameBoard += "\n";
@@ -171,16 +208,36 @@ public class ShogiGame extends Activity {
 		}
 	}
 	
+	public void navigate( )
+	{
+		String k = moveList.substring( moveList.lastIndexOf( "." ) + 1 ).trim();
+		char [ ] buffer = new char[ 10 ];
+		
+		k.getChars(0, k.length(), buffer, 0);
+		
+		ShogiPiece temp = board[ (9 - ( buffer[ 4 ] - 48 ) ) ][ ( buffer[ 5 ] - 97 ) ];
+		board[ (9 - ( buffer[ 4 ] - 48 ) ) ][ ( buffer[ 5 ] - 97 ) ] = null;
+		board[ (9 - ( buffer[ 1 ] - 48 ) ) ][ ( buffer[ 2 ] - 97 ) ] = temp;
+		
+		turn = !turn;
+		
+	 	setContentView( bvBoard );
+	  	bvBoard.requestFocus();
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
 		switch( item.getItemId() )
 		{
+		case R.id.navi_id:
+			navigate( );
+			return true;
 		case R.id.settings_id:
 			startActivity( new Intent( this, Prefs.class ) );
 			return true;
 		case R.id.dropboard_id:
-			Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ) );
+			Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
 			d.show( );
 			return true;
 		case R.id.move_list_id:
@@ -352,7 +409,7 @@ public class ShogiGame extends Activity {
 						AlertDialog.Builder builder = new AlertDialog.Builder( this );
 						builder.setMessage( "Promote?" )
 							   .setCancelable( false )
-						       .setPositiveButton( s.getPieceTempName() + "(No)", new DialogInterface.OnClickListener() {
+						       .setPositiveButton( s.getPieceHistoryName() + "(No)", new DialogInterface.OnClickListener() {
 						           public void onClick(DialogInterface dialog, int id) {
 						        	   dialog.cancel();
 						           }

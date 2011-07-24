@@ -44,44 +44,6 @@ public class ShogiPiece {
 		}
 	}
 
-	/* Todo: To test while lacking images */
-	public String getPieceTempName() {
-		switch (piece) {
-		case P_PAWN:
-			return "P";
-		case P_PRO_PAWN:
-			return "P*";
-		case P_LANCE:
-			return "L";
-		case P_PRO_LANCE:
-			return "L*";
-		case P_KNIGHT:
-			return "Kn";
-		case P_PRO_KNIGHT:
-			return "Kn*";
-		case P_SILVER:
-			return "S";
-		case P_PRO_SILVER:
-			return "S*";
-		case P_GOLD:
-			return "G";
-		case P_KING:
-			return "K";
-		case P_OPPO_KING:
-			return "OK";
-		case P_BISHOP:
-			return "B";
-		case P_PRO_BISHOP:
-			return "B*";
-		case P_ROOK:
-			return "R";
-		case P_PRO_ROOK:
-			return "R*";
-		default:
-			return "?";
-		}
-	}
-
 	public boolean getSide() {
 		return this.side;
 	}
