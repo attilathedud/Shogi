@@ -90,6 +90,7 @@ public class ShogiActivity extends Activity implements OnClickListener{
 		}
 	}
 
+	/* Load drop board */
 	private void loadGame( String buffer )
 	{
 	   Intent iGame = new Intent( this, ShogiGame.class );

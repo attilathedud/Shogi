@@ -9,9 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +23,7 @@ public class ShogiGame extends Activity {
 	
 	private ShogiPiece board[ ][ ] = new ShogiPiece[ 9 ][ 9 ];
 	private int bDrop[ ] = new int[ 7 ], wDrop[ ] = new int[ 7 ], drop = -1, curMove = 1;
-	private boolean turn = true;
+	private boolean turn = true, apos = false;
 	private BoardView bvBoard;
 	private String moveList = "";
 	
@@ -63,36 +61,72 @@ public class ShogiGame extends Activity {
 			
 			String tempBoard = extras.getString( "CurBoard" ).trim();
 			char [ ] buffer = new char[ 200 ];
-			boolean tempSide = BLACK;
 			int x = 0, y = 0;
 
 			tempBoard.getChars(0, tempBoard.length(), buffer, 0);
 			
-			/* Todo: Fix sides, import drop board */
+			/* Todo: Import drop board */
 			for( int i = 0; i < buffer.length - 1; i ++ )
 			{
-				if( buffer[ i ] == '?' )
+				if( buffer[ i ] != '?' )
 				{
-					
-				}
-				else
-				{				
-					if( buffer[ i ] == 'L' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, tempSide );
-					else if( buffer[ i ] == 'N' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, tempSide );
-					else if( buffer[ i ] == 'S' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, tempSide );
-					else if( buffer[ i ] == 'G' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, tempSide );
-					else if( buffer[ i ] == 'K' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KING, tempSide );
-					else if( buffer[ i ] == 'P' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, tempSide );
+					/* Ugh... this needs cleaning up */
+					if( buffer[ i ] == 'A' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, BLACK );
 					else if( buffer[ i ] == 'B' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, tempSide );
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, WHITE );
+					else if( buffer[ i ] == 'C' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_PAWN, BLACK );
+					else if( buffer[ i ] == 'D' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_PAWN, WHITE );
+					else if( buffer[ i ] == 'E' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, BLACK );
+					else if( buffer[ i ] == 'F' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, WHITE );
+					else if( buffer[ i ] == 'G' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_LANCE, BLACK );
+					else if( buffer[ i ] == 'H' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_LANCE, WHITE );
+					else if( buffer[ i ] == 'I' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, BLACK );
+					else if( buffer[ i ] == 'J' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, WHITE );
+					else if( buffer[ i ] == 'K' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_KNIGHT, BLACK );
+					else if( buffer[ i ] == 'L' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_KNIGHT, WHITE );
+					else if( buffer[ i ] == 'M' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, BLACK );
+					else if( buffer[ i ] == 'N' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, WHITE );
+					else if( buffer[ i ] == 'O' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_SILVER, BLACK );
+					else if( buffer[ i ] == 'P' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_SILVER, WHITE );
+					else if( buffer[ i ] == 'Q' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, BLACK );
 					else if( buffer[ i ] == 'R' )
-						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, tempSide );
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, WHITE );
+					else if( buffer[ i ] == 'S' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KING, WHITE );
+					else if( buffer[ i ] == 'T' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_OPPO_KING, BLACK );
+					else if( buffer[ i ] == 'U' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, BLACK );
+					else if( buffer[ i ] == 'V' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, WHITE );
+					else if( buffer[ i ] == 'W' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_BISHOP, BLACK );
+					else if( buffer[ i ] == 'X' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_BISHOP, WHITE );
+					else if( buffer[ i ] == 'Y' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, BLACK );
+					else if( buffer[ i ] == 'Z' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, WHITE );
+					else if( buffer[ i ] == '$' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_ROOK, BLACK );
+					else if( buffer[ i ] == '&' )
+						board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PRO_ROOK, WHITE );
 				}
 				
 				x++;
@@ -103,8 +137,6 @@ public class ShogiGame extends Activity {
 				}
 			}
 			
-
-			//initBoard( );
 		}
 		
 		bvBoard = new BoardView( this );
@@ -120,6 +152,59 @@ public class ShogiGame extends Activity {
 		});
 		setContentView( bvBoard );
 		bvBoard.requestFocus( );
+	}
+	
+	public ShogiPiece[][] getBoard( )
+	{
+		ShogiPiece tboard[ ][ ] = new ShogiPiece[ 9 ][ 9 ];
+		
+		for( int i = 0; i < 9; i++ )
+		{
+			for( int j = 0; j < 9; j++ )
+			{
+				if( board[ i ][ j ] == null )
+					continue;
+				else
+					tboard[ i ][ j ] = new ShogiPiece( board[ i ][ j ].getPiece(), board[ i ][ j ].getSide() );
+			}
+		}
+		
+		return tboard;
+	}
+	
+	public void setBoard( ShogiPiece[][] t )
+	{
+		board = t;
+	}
+	 
+	public int[] getBDrop( )
+	{
+		int td[] = new int[ 7 ];
+		
+		for( int i = 0; i < 7; i++ )
+			td[ i ] = bDrop[ i ];
+		
+		return td;
+	}
+	
+	public int[] getWDrop( )
+	{
+		int td[] = new int[ 7 ];
+		
+		for( int i = 0; i < 7; i++ )
+			td[ i ] = wDrop[ i ];
+		
+		return td;
+	}
+	
+	public void setBDrop( int[] t )
+	{
+		bDrop = t;
+	}
+	
+	public void setWDrop( int[] t )
+	{
+		wDrop = t;
 	}
 	
 	private void initBoard( )
@@ -156,17 +241,33 @@ public class ShogiGame extends Activity {
 	}
 	
 	@Override
-	/*Todo: Make back reverse moves */
 	public void onBackPressed() 
 	{
-		Log.d( "SHOGI" , "BACK PRESSED" );
 		if( drop != -1 )
 			drop = -1;
 		else
 		{
-			super.onBackPressed();
+			AlertDialog.Builder builder2 = new AlertDialog.Builder( this );
+			builder2.setMessage( "Save?" )
+			       .setPositiveButton( "No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   finish( );
+			           }
+			       })
+			       .setNegativeButton( "Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	  saveGame( );
+			        	  finish( );
+			           }
+			       });
+			AlertDialog alert2 = builder2.create();
+			alert2.show( );
+			
+			if( !alert2.isShowing() )
+			{
+				super.onBackPressed();
+			}	
 		}
-		//super.onBackPressed();
 	}
 	
 	@Override
@@ -177,6 +278,7 @@ public class ShogiGame extends Activity {
 		return result;
 	}
 
+	/* Save drop board */
 	public void saveGame( )
 	{
 		String gameBoard = "";
@@ -185,8 +287,7 @@ public class ShogiGame extends Activity {
 		{
 			for( int j = 0; j < 9; j++ )
 			{
-				gameBoard += ( board[ j ][ i ] == null ? "?" : ( board[ j ][ i ].getPieceHistoryName() == "Kn" )
-					? 'N' : board[ j ][ i ].getPieceHistoryName());
+				gameBoard += ( board[ j ][ i ] == null ? "?" : board[ j ][ i ].getSaveName() );
 			}
 			
 			gameBoard += "\n";
@@ -208,6 +309,7 @@ public class ShogiGame extends Activity {
 		}
 	}
 	
+/*
 	public void navigate( )
 	{
 		String k = moveList.substring( moveList.lastIndexOf( "." ) + 1 ).trim();
@@ -223,6 +325,23 @@ public class ShogiGame extends Activity {
 		
 	 	setContentView( bvBoard );
 	  	bvBoard.requestFocus();
+	}*/
+	
+	public void setAPos( boolean c )
+	{
+		apos = c;
+	}
+	
+	public String getMoveList()
+	{
+		String c = new String( moveList );
+		
+		return c;
+	}
+	
+	public void setMoveList(String c)
+	{
+		moveList = c;
 	}
 	
 	@Override
@@ -230,12 +349,15 @@ public class ShogiGame extends Activity {
 	{
 		switch( item.getItemId() )
 		{
-		case R.id.navi_id:
-			navigate( );
+		case R.id.apos_id:
+			//navigate( );
+			apos = true;
+			Dialog c = new NaviBoardDialog( this, apos );
+			c.show();
 			return true;
-		case R.id.settings_id:
+		/*case R.id.settings_id:
 			startActivity( new Intent( this, Prefs.class ) );
-			return true;
+			return true;*/
 		case R.id.dropboard_id:
 			Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
 			d.show( );
@@ -369,8 +491,11 @@ public class ShogiGame extends Activity {
 	{
 	   moveList += "+";
 	   s.promote();
-  	   setContentView( bvBoard );
-  	   bvBoard.requestFocus();
+	   if( apos == false )
+	   {
+	  	   setContentView( bvBoard );
+	  	   bvBoard.requestFocus();
+	   }
 	}
 	
 	public void setPiece( int ox, int oy, int x, int y )
@@ -487,6 +612,11 @@ public class ShogiGame extends Activity {
 	public boolean getTurn( )
 	{
 		return turn;
+	}
+	
+	public void setTurn( boolean t )
+	{
+		turn = t;
 	}
 
 }

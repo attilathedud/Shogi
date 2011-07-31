@@ -14,8 +14,87 @@ public class ShogiPiece {
 		return this.piece;
 	}
 
+	public String getSaveName()
+	{
+		switch( piece )
+		{
+		case P_PAWN:
+			if( side == true )
+				return "A";
+			else
+				return "B";
+		case P_PRO_PAWN:
+			if( side == true )
+				return "C";
+			else
+				return "D";
+		case P_LANCE:
+			if( side == true )
+				return "E";
+			else
+				return "F";
+		case P_PRO_LANCE:
+			if( side == true )
+				return "G";
+			else
+				return "H";
+		case P_KNIGHT:
+			if( side == true )
+				return "I";
+			else
+				return "J";
+		case P_PRO_KNIGHT:
+			if( side == true )
+				return "K";
+			else
+				return "L";
+		case P_SILVER:
+			if( side == true )
+				return "M";
+			else
+				return "N";
+		case P_PRO_SILVER:
+			if( side == true )
+				return "O";
+			else
+				return "P";
+		case P_GOLD:
+			if( side == true )
+				return "Q";
+			else
+				return "R";
+		case P_KING:
+			return "S";
+		case P_OPPO_KING:
+			return "T";
+		case P_BISHOP:
+			if( side == true )
+				return "U";
+			else
+				return "V";
+		case P_PRO_BISHOP:
+			if( side == true )
+				return "W";
+			else
+				return "X";
+		case P_ROOK:
+			if( side == true )
+				return "Y";
+			else
+				return "Z";
+		case P_PRO_ROOK:
+			if( side == true )
+				return "$";
+			else
+				return "&";
+		}
+		
+		return "";
+	}
+	
 	public String getPieceHistoryName() {
-		switch (piece) {
+		switch (piece) 
+		{
 		case P_PAWN:
 		case P_PRO_PAWN:
 			return "P";

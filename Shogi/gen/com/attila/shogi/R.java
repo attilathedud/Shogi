@@ -17,7 +17,7 @@ public final class R {
         public static final int selection_c2=0x7f050003;
     }
     public static final class drawable {
-        public static final int background=0x7f020000;
+        public static final int background2=0x7f020000;
         public static final int icon=0x7f020001;
         public static final int s_bishop=0x7f020002;
         public static final int s_gold=0x7f020003;
@@ -37,12 +37,13 @@ public final class R {
     }
     public static final class id {
         public static final int about_id=0x7f080012;
+        public static final int apos_id=0x7f080015;
         public static final int bishop_id=0x7f080006;
         public static final int bishop_id_2=0x7f08000d;
         public static final int cont_game_id=0x7f080011;
         public static final int dropboard_id=0x7f080014;
         public static final int exit_id=0x7f080013;
-        public static final int exitg_id=0x7f080018;
+        public static final int exitg_id=0x7f080017;
         public static final int gold_id=0x7f080005;
         public static final int gold_id_2=0x7f08000c;
         public static final int keypad=0x7f080000;
@@ -51,13 +52,11 @@ public final class R {
         public static final int lance_id=0x7f080003;
         public static final int lance_id_2=0x7f08000a;
         public static final int move_list_id=0x7f080016;
-        public static final int navi_id=0x7f080015;
         public static final int new_game_id=0x7f080010;
         public static final int pawn_id=0x7f080001;
         public static final int pawn_id_2=0x7f080008;
         public static final int rook_id=0x7f080007;
         public static final int rook_id_2=0x7f08000e;
-        public static final int settings_id=0x7f080017;
         public static final int silver_id=0x7f080004;
         public static final int silver_id_2=0x7f08000b;
         public static final int textView1=0x7f08000f;
