@@ -1,11 +1,8 @@
 package com.attila.shogi;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class ShogiActivity extends Activity implements OnClickListener{
-
-	byte [] buffer = new byte[ 1000 ];
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -40,36 +35,12 @@ public class ShogiActivity extends Activity implements OnClickListener{
 		{
 		case R.id.new_game_id:
 			/*Todo: allow to start from scenario */
-			startNewGame( );
+			Dialog d = new StartGameDialog( this );
+			d.show();
 			break;
 		case R.id.cont_game_id:
-			try {
-				FileInputStream fos = openFileInput( "Game 1" );
-				fos.read( buffer );
-				fos.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			/* Todo: create activity so we can hold more than one save */
-			AlertDialog.Builder builder2 = new AlertDialog.Builder( this );
-			builder2.setMessage( new String( buffer ).trim() + "\n" )
-			       .setPositiveButton( "Cancel", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   dialog.cancel();
-			           }
-			       })
-			       .setNegativeButton( "Load", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   loadGame( new String( buffer ) );
-			        	   dialog.cancel( );
-			           }
-			       });
-			AlertDialog alert2 = builder2.create();
-			alert2.show( );
+			Intent lGame = new Intent( this, LoadGame.class);
+			startActivity( lGame );
 			break;
 		case R.id.about_id:
 			AlertDialog.Builder builder = new AlertDialog.Builder( this );
@@ -89,20 +60,4 @@ public class ShogiActivity extends Activity implements OnClickListener{
 			break;
 		}
 	}
-
-	/* Load drop board */
-	private void loadGame( String buffer )
-	{
-	   Intent iGame = new Intent( this, ShogiGame.class );
-	   iGame.putExtra( "CurBoard", buffer.trim().split( "END_OF_GAMEBOARD")[ 0 ] );
- 	   iGame.putExtra( "MoveList", buffer.split( "END_OF_GAMEBOARD")[ 1 ] );
- 	   startActivity( iGame );
-	}
-	
-	private void startNewGame( )
-	{
-		Intent iGame = new Intent( this, ShogiGame.class );
-		startActivity( iGame );
-	}
-
 }

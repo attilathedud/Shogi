@@ -11,10 +11,10 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int background=0x7f050000;
-        public static final int board=0x7f050001;
-        public static final int selection_c=0x7f050002;
-        public static final int selection_c2=0x7f050003;
+        public static final int background=0x7f040000;
+        public static final int board=0x7f040001;
+        public static final int selection_c=0x7f040002;
+        public static final int selection_c2=0x7f040003;
     }
     public static final class drawable {
         public static final int background2=0x7f020000;
@@ -36,45 +36,44 @@ public final class R {
         public static final int s_silver=0x7f020010;
     }
     public static final class id {
-        public static final int about_id=0x7f080012;
-        public static final int apos_id=0x7f080015;
-        public static final int bishop_id=0x7f080006;
-        public static final int bishop_id_2=0x7f08000d;
-        public static final int cont_game_id=0x7f080011;
-        public static final int dropboard_id=0x7f080014;
-        public static final int exit_id=0x7f080013;
-        public static final int exitg_id=0x7f080017;
-        public static final int gold_id=0x7f080005;
-        public static final int gold_id_2=0x7f08000c;
-        public static final int keypad=0x7f080000;
-        public static final int knight_id=0x7f080002;
-        public static final int knight_id_2=0x7f080009;
-        public static final int lance_id=0x7f080003;
-        public static final int lance_id_2=0x7f08000a;
-        public static final int move_list_id=0x7f080016;
-        public static final int new_game_id=0x7f080010;
-        public static final int pawn_id=0x7f080001;
-        public static final int pawn_id_2=0x7f080008;
-        public static final int rook_id=0x7f080007;
-        public static final int rook_id_2=0x7f08000e;
-        public static final int silver_id=0x7f080004;
-        public static final int silver_id_2=0x7f08000b;
-        public static final int textView1=0x7f08000f;
+        public static final int about_id=0x7f070016;
+        public static final int apos_id=0x7f070019;
+        public static final int bishop_id=0x7f07000b;
+        public static final int bishop_id_2=0x7f070012;
+        public static final int cont_game_id=0x7f070015;
+        public static final int dropboard_id=0x7f070018;
+        public static final int exit_id=0x7f070017;
+        public static final int exitg_id=0x7f07001b;
+        public static final int gold_id=0x7f07000a;
+        public static final int gold_id_2=0x7f070011;
+        public static final int keypad=0x7f070005;
+        public static final int knight_id=0x7f070007;
+        public static final int knight_id_2=0x7f07000e;
+        public static final int lance_id=0x7f070008;
+        public static final int lance_id_2=0x7f07000f;
+        public static final int move_list_id=0x7f07001a;
+        public static final int new_game_id=0x7f070014;
+        public static final int oPhone_id=0x7f070001;
+        public static final int pawn_id=0x7f070006;
+        public static final int pawn_id_2=0x7f07000d;
+        public static final int rook_id=0x7f07000c;
+        public static final int rook_id_2=0x7f070013;
+        public static final int savename_id=0x7f070003;
+        public static final int silver_id=0x7f070009;
+        public static final int silver_id_2=0x7f070010;
+        public static final int startb_id=0x7f070004;
+        public static final int textView1=0x7f070000;
+        public static final int textView2=0x7f070002;
     }
     public static final class layout {
-        public static final int dropbox=0x7f030000;
-        public static final int main=0x7f030001;
+        public static final int configstartgame=0x7f030000;
+        public static final int dropbox=0x7f030001;
+        public static final int main=0x7f030002;
     }
     public static final class menu {
-        public static final int menu=0x7f070000;
+        public static final int menu=0x7f060000;
     }
     public static final class string {
-        public static final int app_name=0x7f060000;
-        public static final int flip_board_t=0x7f060001;
-        public static final int menu_insert=0x7f060003;
-        public static final int no_notes=0x7f060002;
-    }
-    public static final class xml {
-        public static final int settings=0x7f040000;
+        public static final int app_name=0x7f050000;
     }
 }

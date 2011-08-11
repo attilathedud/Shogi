@@ -4,7 +4,6 @@
         <item android:id="@+id/dropboard_id" android:title="Drop Box"></item>
         <item android:id="@+id/apos_id" android:title="Analyse Position"></item>
         <item android:title="Move List" android:id="@+id/move_list_id"></item>
-        <!-- <item android:id="@+id/settings_id" android:title="Settings"></item> -->
         <item android:id="@+id/exitg_id" android:title="Exit"></item>
         
     </menu>

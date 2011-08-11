@@ -11,16 +11,9 @@ public class NaviBoardDialog extends Dialog {
 	private ShogiGame curGame;
 	private BoardView bvBoard;
 	private ShogiPiece board[ ][ ];
-	private boolean turn, apos;
+	private boolean turn;
 	private int bDrop[ ], wDrop[ ];
 	private String moveList;
-	
-
-	/*Todo: fix refresh issue by making NaviBoardDialog be a global member initialised at
-	 * onCreate, then use onPromote() to pass the message to NaviBoardDialog.onPromote()
-	 * ...
-	 * apos really doesn't need to be passed... make getters/setters in ShogiGame
-	 */
 	
 	@Override
 	public void dismiss() {
@@ -31,22 +24,31 @@ public class NaviBoardDialog extends Dialog {
 		this.curGame.setBDrop( bDrop );
 		this.curGame.setWDrop( wDrop );
 		
-		this.curGame.setAPos( !this.apos );
+		this.curGame.setAPos( false );
 		this.curGame.setMoveList( moveList );
 		
 		
 		super.dismiss();
 	}
 
-	public NaviBoardDialog(Context context, boolean apos ) {
+	public NaviBoardDialog(Context context ) {
 		super(context);
+	}
+	
+	public void setGame( Context context )
+	{
 		this.curGame = ( ShogiGame ) context;
 		board = this.curGame.getBoard();
 		turn = this.curGame.getTurn();
 		bDrop = this.curGame.getBDrop();
 		wDrop = this.curGame.getWDrop();
 		moveList = this.curGame.getMoveList();
-		this.apos = apos;
+	}
+	
+	public void onPromote( ShogiPiece s )
+	{
+	   setContentView( bvBoard );
+	   bvBoard.requestFocus();
 	}
 
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -60,7 +62,7 @@ public class NaviBoardDialog extends Dialog {
 			
 			public boolean onLongClick( View v )
 			{
-				Dialog d = new DropBoxDialog( curGame, (turn ? curGame.getBDrop() : curGame.getWDrop() ), (turn ? curGame.getWDrop() : curGame.getBDrop() ) );
+				Dialog d = new DropBoxDialog( curGame, (curGame.getTurn() ? curGame.getBDrop() : curGame.getWDrop() ), (curGame.getTurn() ? curGame.getWDrop() : curGame.getBDrop() ) );
 				d.show( );
 				return true;
 			}

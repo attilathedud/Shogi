@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="Opponent's Phone Number" android:id="@+id/textView1"></TextView>
+    <EditText android:layout_height="wrap_content" android:id="@+id/oPhone_id" android:layout_width="match_parent" android:inputType="phone">
+        <requestFocus></requestFocus>
+    </EditText>
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="Save Name" android:id="@+id/textView2"></TextView>
+    <EditText android:layout_height="wrap_content" android:id="@+id/savename_id" android:layout_width="match_parent"></EditText>
+    <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Start Game!" android:id="@+id/startb_id" android:gravity="center|center_horizontal" android:layout_gravity="center" android:enabled="false"></Button>
+    
+</LinearLayout>
