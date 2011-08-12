@@ -33,7 +33,8 @@ public class StartGameDialog extends Dialog {
 		((EditText) findViewById(R.id.oPhone_id)).setOnFocusChangeListener( new View.OnFocusChangeListener( ) {
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
-				if( ((EditText) findViewById(R.id.oPhone_id)).getText().toString().isEmpty() )
+				//if( ((EditText) findViewById(R.id.oPhone_id)).getText().toString().isEmpty() )
+				if( ((EditText) findViewById(R.id.oPhone_id)).getText().toString().length() == 0 )
 					findViewById( R.id.startb_id ).setEnabled( false );
 				else
 					findViewById( R.id.startb_id ).setEnabled( true );
