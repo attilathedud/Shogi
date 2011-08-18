@@ -10,7 +10,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.telephony.SmsManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +20,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-// mat - SMS send message
-import android.content.Intent;
-import android.app.PendingIntent;
-import android.telephony.SmsManager;
 
 public class ShogiGame extends Activity {
 	
@@ -36,11 +32,14 @@ public class ShogiGame extends Activity {
 	private ViewGroup l;
 	private Button send;
 	private NaviBoardDialog navi;
+	private SmsManager s;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);	
+		
+		s = SmsManager.getDefault();
 		
 		Bundle extras = getIntent( ).getExtras();
 		
@@ -184,23 +183,10 @@ public class ShogiGame extends Activity {
 			public void onClick( View v )
 			{
 				send.setVisibility( View.INVISIBLE );
-				//DAWG HERE IS THE PLACE YOU PUT YOUR TEXT MESSAGING N' SHIT I EVEN GOT
-				//ALL THIS SHIT SET UP 4 U.
-				String lastMove = moveList.substring( moveList.lastIndexOf( "\n" ) + 1 ).trim();
-				Log.d( phoneNumber, lastMove );
-
-				String confirmText = "send to: " + phoneNumber + ", text: " + lastMove;
-				Toast.makeText(getBaseContext(), 
-						confirmText, 
-		                Toast.LENGTH_SHORT).show();
-		        
-				// mat - SMS send message
-				sendSMS (phoneNumber, lastMove);
 				
-				confirmText = "SMS send message comes back home...";
-				Toast.makeText(getBaseContext(), 
-						confirmText, 
-		                Toast.LENGTH_SHORT).show();
+				String lastMove = moveList.substring( moveList.lastIndexOf( "\n" ) + 1 ).trim();
+				
+				s.sendTextMessage( phoneNumber, null, lastMove, null, null );
 			}
 		});
 	
@@ -210,26 +196,6 @@ public class ShogiGame extends Activity {
 		setContentView( l );
 		l.requestFocus();
 	}
-
-	// mat - SMS send message
-    private void sendSMS(String phoneNumber, String message)
-    {    
-		Log.d( phoneNumber, message );
-
-        PendingIntent pi = PendingIntent.getActivity(this, 0,
-            new Intent(this, ShogiGame.class), 0);                
-		
-        //Log.d( "sendSMS: ", "PendingIntent" );
-
-        SmsManager sms = SmsManager.getDefault();
-        
-        //Log.d( "sendSMS: ", "SmsManager" );
-      
-        sms.sendTextMessage(phoneNumber, null, message, pi, null);   
-        
-        Log.d( "sendSMS: ", "sendTextMessage completes..." );
-
-    } 
      	
 	@Override
 	public void onBackPressed() 
