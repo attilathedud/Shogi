@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.Gravity;
@@ -164,13 +165,12 @@ public class ShogiGame extends Activity {
 		navi = new NaviBoardDialog( this );
 		
 		BoardView bvBoard = new BoardView( this );
-		final Context k = this;
+//		final Context k = this;
 		bvBoard.setOnLongClickListener( new OnLongClickListener( ) {
-			
 			public boolean onLongClick( View v )
 			{
-				Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
-				d.show( );
+				//Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
+				//d.show( );
 				return true;
 			}
 		});
@@ -187,6 +187,8 @@ public class ShogiGame extends Activity {
 				String lastMove = moveList.substring( moveList.lastIndexOf( "\n" ) + 1 ).trim();
 				
 				s.sendTextMessage( phoneNumber, null, lastMove, null, null );
+				
+				saveGame( );
 			}
 		});
 	
@@ -204,26 +206,7 @@ public class ShogiGame extends Activity {
 			drop = -1;
 		else
 		{
-			AlertDialog.Builder builder2 = new AlertDialog.Builder( this );
-			builder2.setMessage( "Save?" )
-			       .setPositiveButton( "No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   finish( );
-			           }
-			       })
-			       .setNegativeButton( "Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	  saveGame( );
-			        	  finish( );
-			           }
-			       });
-			AlertDialog alert2 = builder2.create();
-			alert2.show( );
-			
-			if( !alert2.isShowing() )
-			{
-				super.onBackPressed();
-			}	
+			super.onBackPressed();
 		}
 	}
 	
@@ -245,6 +228,9 @@ public class ShogiGame extends Activity {
 			navi.setGame( this );
 			navi.show();
 			return true;
+		case R.id.settings_id:
+			startActivity( new Intent( this, Prefs.class ) );
+			return true;
 		case R.id.dropboard_id:
 			Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
 			d.show( );
@@ -263,21 +249,7 @@ public class ShogiGame extends Activity {
 			
 			return true;
 		case R.id.exitg_id:	
-			AlertDialog.Builder builder2 = new AlertDialog.Builder( this );
-			builder2.setMessage( "Save?" )
-			       .setPositiveButton( "No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   finish( );
-			           }
-			       })
-			       .setNegativeButton( "Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	  saveGame( );
-			        	  finish( );
-			           }
-			       });
-			AlertDialog alert2 = builder2.create();
-			alert2.show( );
+			finish( );
 			
 			return true;
 		}

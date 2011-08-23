@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,13 +16,15 @@ import android.view.View;
 public class BoardView extends View {
 	
 	private float width, height;
-	private int selX, selY, oSelX, oSelY;
+	private int selX, selY, oSelX, oSelY, curRsInUse = 0;
 	private boolean pieceSelected = false;
 	private final ShogiGame curGame;
-	private final Rect selRect = new Rect( ), rTemp = new Rect( );
+	private final Rect selRect = new Rect( ), rTemp = new Rect( ), rSTemp[] = new Rect[ 9 ];
 	private final static Bitmap pTemp[ ] = new Bitmap[ 15 ];
-	private final Paint selected = new Paint( ), squares = new Paint( ), background = new Paint( );
+	private final Paint selected = new Paint( ), squares = new Paint( ), background = new Paint( ), posMoves = new Paint(),
+		foreground =  new Paint( Paint.ANTI_ALIAS_FLAG );
 	private final Matrix m = new Matrix( );
+	private FontMetrics fm;
 
 	public BoardView( Context context )
 	{
@@ -30,8 +34,11 @@ public class BoardView extends View {
 		setFocusableInTouchMode( true );
 		selX = selY = 4;
 		oSelX = oSelY = -1;
+		posMoves.setColor( Color.GREEN );
 		squares.setColor( Color.BLACK );
 		background.setColor( getResources( ).getColor( R.color.board ) );
+		foreground.setStyle( Style.FILL );
+		foreground.setTextAlign( Paint.Align.CENTER );
 		m.postRotate( 180 );
 		pTemp[ 0 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_pawn );
 		pTemp[ 1 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_p_pawn );
@@ -48,6 +55,8 @@ public class BoardView extends View {
 		pTemp[ 12 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_p_bishop );
 		pTemp[ 13 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_rook );
 		pTemp[ 14 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_p_rook );
+		for( int i = 0; i < 9; i++ )
+			rSTemp[ i ] = new Rect();
 	}
 	
 	private void getRect( int x, int y, Rect rect )
@@ -80,11 +89,19 @@ public class BoardView extends View {
 				oSelX = -1;
 				oSelY = -1;
 				pieceSelected = false;
+				for( int i = 0; i < curRsInUse; i++)
+				{
+					invalidate(rSTemp[ i ]);
+				}
 				return;
 			}
 			
 			this.curGame.setPiece( oSelX, oSelY, selX, selY );
 			invalidate(selRect);
+			for( int i = 0; i < curRsInUse; i++)
+			{
+				invalidate(rSTemp[ i ]);
+			}
 			oSelX = -1;
 			oSelY = -1;
 			pieceSelected = false;
@@ -97,6 +114,13 @@ public class BoardView extends View {
 			pieceSelected = true;
 			oSelX = selX;
 			oSelY = selY;
+			
+			
+			curRsInUse = this.curGame.getPiece( selX, selY ).getPieceMoves( selX, selY, rSTemp, this.width, this.height );
+			for( int i = 0; i < curRsInUse; i++)
+			{
+				invalidate( rSTemp[ i ] );
+			}
 		}
 		
 		invalidate(selRect);
@@ -120,75 +144,85 @@ public class BoardView extends View {
 		//draw pieces
 		Bitmap curpTemp = null;
 		
-		for( int i = 0; i < 9; i++ )
+		if( !Prefs.getPieces( this.curGame ) )
 		{
-			for( int j = 0; j < 9; j++ )
+			for( int i = 0; i < 9; i++ )
 			{
-				if( this.curGame.getPiece( i, j ) == null )
-					continue;
-				
-				switch( this.curGame.getPiece(i , j ).getPiece( ) )
+				for( int j = 0; j < 9; j++ )
 				{
-				case P_PAWN:
-					curpTemp = pTemp[ 0 ];
-					break;
-				case P_PRO_PAWN:
-					curpTemp = pTemp[ 1 ];
-					break;
-				case P_LANCE:
-					curpTemp = pTemp[ 2 ];
-					break;
-				case P_PRO_LANCE:
-					curpTemp = pTemp[ 3 ];
-					break;
-				case P_KNIGHT:
-					curpTemp = pTemp[ 4 ];
-					break;
-				case P_PRO_KNIGHT:
-					curpTemp = pTemp[ 5 ];
-					break;
-				case P_SILVER:
-					curpTemp = pTemp[ 6 ];
-					break;
-				case P_PRO_SILVER:
-					curpTemp = pTemp[ 7 ];
-					break;
-				case P_GOLD:
-					curpTemp = pTemp[ 8 ];
-					break;
-				case P_KING:
-					curpTemp = pTemp[ 9 ];
-					break;
-				case P_OPPO_KING:
-					curpTemp = pTemp[ 10 ];
-					break;
-				case P_BISHOP:
-					curpTemp = pTemp[ 11 ];
-					break;
-				case P_PRO_BISHOP:
-					curpTemp = pTemp[ 12 ];
-					break;
-				case P_ROOK:
-					curpTemp = pTemp[ 13 ];
-					break;
-				case P_PRO_ROOK:
-					curpTemp = pTemp[ 14 ];
-					break;
+					if( this.curGame.getPiece( i, j ) == null )
+						continue;
+					
+					switch( this.curGame.getPiece(i , j ).getPiece( ) )
+					{
+					case P_PAWN:
+						curpTemp = pTemp[ 0 ];
+						break;
+					case P_PRO_PAWN:
+						curpTemp = pTemp[ 1 ];
+						break;
+					case P_LANCE:
+						curpTemp = pTemp[ 2 ];
+						break;
+					case P_PRO_LANCE:
+						curpTemp = pTemp[ 3 ];
+						break;
+					case P_KNIGHT:
+						curpTemp = pTemp[ 4 ];
+						break;
+					case P_PRO_KNIGHT:
+						curpTemp = pTemp[ 5 ];
+						break;
+					case P_SILVER:
+						curpTemp = pTemp[ 6 ];
+						break;
+					case P_PRO_SILVER:
+						curpTemp = pTemp[ 7 ];
+						break;
+					case P_GOLD:
+						curpTemp = pTemp[ 8 ];
+						break;
+					case P_KING:
+						curpTemp = pTemp[ 9 ];
+						break;
+					case P_OPPO_KING:
+						curpTemp = pTemp[ 10 ];
+						break;
+					case P_BISHOP:
+						curpTemp = pTemp[ 11 ];
+						break;
+					case P_PRO_BISHOP:
+						curpTemp = pTemp[ 12 ];
+						break;
+					case P_ROOK:
+						curpTemp = pTemp[ 13 ];
+						break;
+					case P_PRO_ROOK:
+						curpTemp = pTemp[ 14 ];
+						break;
+					}
+					
+					getRect( i, j, rTemp );
+					
+					if( this.curGame.getPiece( i, j ).getSide() == true )
+						canvas.drawBitmap( curpTemp, null, rTemp, null );
+					else
+						canvas.drawBitmap( Bitmap.createBitmap( curpTemp, 0, 0, curpTemp.getWidth(), 
+								curpTemp.getHeight(), m, true ) , null, rTemp, null );
 				}
-				
-				getRect( i, j, rTemp );
-				
-				if( this.curGame.getPiece( i, j ).getSide() == true )
-					canvas.drawBitmap( curpTemp, null, rTemp, null );
-				else
-					canvas.drawBitmap( Bitmap.createBitmap( curpTemp, 0, 0, curpTemp.getWidth(), 
-							curpTemp.getHeight(), m, true ) , null, rTemp, null );
 			}
 		}
+		
+		int curPos = 9;
+		char curPos2 = 'a';
 		
 		//draw squares		
 		for( int i = 0; i < 9; i++ )
 		{
+			canvas.drawText( Character.toString( curPos2 ), 1, (i+1) * height, squares);
+			canvas.drawText( Integer.toString( curPos ), i * width + 1, 10 , squares);
+			curPos--;
+			curPos2++;
 			canvas.drawLine( 0, i * height, getWidth(), i * height, squares );
 			canvas.drawLine( i * width, 0, i * width, getHeight(), squares );
 			if( i == 3 )
@@ -200,6 +234,44 @@ public class BoardView extends View {
 			{
 				canvas.drawCircle( i * width, i * height, 5, squares );
 				canvas.drawCircle( i * width, ( i - 3 ) * height, 5, squares );
+			}
+		}
+		
+		
+		if( Prefs.getPieces( this.curGame ) )
+		{
+			foreground.setTextSize( height * .75f );
+			foreground.setTextScaleX( width / height );
+			fm = foreground.getFontMetrics( );
+			
+			float x = width / 2;
+			float y = height / 2 - ( fm.ascent + fm.descent ) / 2;
+			
+			for( int i = 0; i < 9; i++ )
+			{
+				for( int j = 0; j < 9; j++ )
+				{
+					if( this.curGame.getPiece( i, j ) == null )
+						continue;
+			
+				if( this.curGame.getPiece( i, j ).getSide() == true )
+					foreground.setColor( Color.BLACK );
+				else
+					foreground.setColor( Color.WHITE );
+			
+				canvas.drawText( this.curGame.getPiece( i, j ).getPieceName(), 
+					i * width + x, j * height + y, foreground );
+			
+				}
+			}
+		}
+		
+		if( pieceSelected == true)
+		{
+			for( int i = 0; i < curRsInUse; i ++)
+			{
+			canvas.drawCircle( (( rSTemp[ i ].right -rSTemp[ i ].left ) / 2) + rSTemp[ i ].left, 
+					(( rSTemp[ i ].bottom -rSTemp[ i ].top ) / 2) + rSTemp[ i ].top, 9 , posMoves );
 			}
 		}
 		

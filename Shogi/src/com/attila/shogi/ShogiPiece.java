@@ -1,5 +1,7 @@
 package com.attila.shogi;
 
+import android.graphics.Rect;
+
 public class ShogiPiece {
 
 	private PieceEnum piece;
@@ -90,6 +92,100 @@ public class ShogiPiece {
 		}
 		
 		return "";
+	}
+	
+	private void getRect( int x, int y, Rect rect, float width, float height )
+	{
+		rect.set( ( int )(x * width), ( int )(y * height), ( int )( x * width + width ), ( int )( y * height + height ));
+	}
+	
+	public int getPieceMoves( int x, int y, Rect[] rSTemp, float width, float height )
+	{
+		switch( piece )
+		{
+		case P_PAWN:
+			getRect( x, (side ? y - 1 : y + 1), rSTemp[ 0 ], width, height );
+			return 1;
+		case P_KNIGHT:
+			if( x > 0)
+			{
+				getRect( x - 1, (side ? y - 2 : y + 2), rSTemp[ 0 ], width, height );		
+			}
+			else
+			{
+				rSTemp[ 0 ] = new Rect( );
+			}
+			if( x < 9 )
+			{
+				getRect( x + 1, (side ? y - 2 : y + 2), rSTemp[ 1 ], width, height );
+				return 2;
+			}
+			else
+				return 1;
+		case P_SILVER:
+			getRect( x, (side ? y - 1 : y + 1), rSTemp[ 0 ], width, height );
+			if( x < 1 )
+			{
+				getRect( x + 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
+				getRect( x + 1, (side ? y + 1 : y - 1), rSTemp[ 2 ], width, height );
+				return 3;
+			}
+			if( x > 8 )
+			{
+				getRect( x - 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
+				getRect( x - 1, (side ? y + 1 : y - 1), rSTemp[ 2 ], width, height );
+				return 3;
+			}
+			getRect( x - 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
+			getRect( x + 1, (side ? y - 1 : y + 1), rSTemp[ 2 ], width, height );
+			if( side ? y == 8 : y == 0 )
+				return 3;
+			else
+			{
+				getRect( x + 1, (side ? y + 1 : y - 1), rSTemp[ 3 ], width, height );
+				getRect( x - 1, (side ? y + 1 : y - 1), rSTemp[ 4 ], width, height );
+				return 5;
+			}
+		}
+		
+		return 0;
+	}
+	
+	public String getPieceName() {
+		switch (piece) 
+		{
+		case P_PAWN:
+			return "P";
+		case P_PRO_PAWN:
+			return "+P";
+		case P_LANCE:
+			return "L";
+		case P_PRO_LANCE:
+			return "+L";
+		case P_KNIGHT:
+			return "N";
+		case P_PRO_KNIGHT:
+			return "+N";
+		case P_SILVER:
+			return "S";
+		case P_PRO_SILVER:
+			return "+S";
+		case P_GOLD:
+			return "G";
+		case P_KING:
+		case P_OPPO_KING:
+			return "K";
+		case P_BISHOP:
+			return "B";
+		case P_PRO_BISHOP:
+			return "+B";
+		case P_ROOK:
+			return "R";
+		case P_PRO_ROOK:
+			return "+R";
+		default:
+			return "?";
+		}
 	}
 	
 	public String getPieceHistoryName() {
