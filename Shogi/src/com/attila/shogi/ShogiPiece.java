@@ -107,45 +107,98 @@ public class ShogiPiece {
 			getRect( x, (side ? y - 1 : y + 1), rSTemp[ 0 ], width, height );
 			return 1;
 		case P_KNIGHT:
-			if( x > 0)
-			{
-				getRect( x - 1, (side ? y - 2 : y + 2), rSTemp[ 0 ], width, height );		
-			}
-			else
-			{
-				rSTemp[ 0 ] = new Rect( );
-			}
-			if( x < 9 )
-			{
-				getRect( x + 1, (side ? y - 2 : y + 2), rSTemp[ 1 ], width, height );
-				return 2;
-			}
-			else
-				return 1;
+			getRect( x - 1, (side ? y - 2 : y + 2), rSTemp[ 0 ], width, height );
+			getRect( x + 1, (side ? y - 2 : y + 2), rSTemp[ 1 ], width, height );
+			return 2;
 		case P_SILVER:
 			getRect( x, (side ? y - 1 : y + 1), rSTemp[ 0 ], width, height );
-			if( x < 1 )
-			{
-				getRect( x + 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
-				getRect( x + 1, (side ? y + 1 : y - 1), rSTemp[ 2 ], width, height );
-				return 3;
-			}
-			if( x > 8 )
-			{
-				getRect( x - 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
-				getRect( x - 1, (side ? y + 1 : y - 1), rSTemp[ 2 ], width, height );
-				return 3;
-			}
 			getRect( x - 1, (side ? y - 1 : y + 1), rSTemp[ 1 ], width, height );
 			getRect( x + 1, (side ? y - 1 : y + 1), rSTemp[ 2 ], width, height );
-			if( side ? y == 8 : y == 0 )
-				return 3;
+			getRect( x + 1, (side ? y + 1 : y - 1), rSTemp[ 3 ], width, height );
+			getRect( x - 1, (side ? y + 1 : y - 1), rSTemp[ 4 ], width, height );
+			return 5;
+		case P_GOLD:
+		case P_PRO_PAWN:
+		case P_PRO_KNIGHT:
+		case P_PRO_SILVER:
+		case P_PRO_LANCE:
+			getRect( x, y - 1, rSTemp[ 0 ], width, height );
+			getRect( x, y + 1, rSTemp[ 1 ], width, height );
+			getRect( x - 1, (side ? y - 1 : y + 1), rSTemp[ 2 ], width, height );
+			getRect( x + 1, (side ? y - 1 : y + 1), rSTemp[ 3 ], width, height );
+			getRect( x - 1, y, rSTemp[ 4 ], width, height );
+			getRect( x + 1, y, rSTemp[ 5 ], width, height );
+			return 6;
+		case P_KING:
+		case P_OPPO_KING:
+			getRect( x, y - 1, rSTemp[ 0 ], width, height );
+			getRect( x, y + 1, rSTemp[ 1 ], width, height );
+			getRect( x - 1, y - 1, rSTemp[ 2 ], width, height );
+			getRect( x + 1, y - 1, rSTemp[ 3 ], width, height );
+			getRect( x - 1, y + 1, rSTemp[ 6 ], width, height );
+			getRect( x + 1, y + 1, rSTemp[ 7 ], width, height );
+			getRect( x - 1, y, rSTemp[ 4 ], width, height );
+			getRect( x + 1, y, rSTemp[ 5 ], width, height );
+			return 8;
+		case P_LANCE:
+			int i = y;
+			if( side == true )
+			{
+				for( i = y - 1; i >= 0; i-- )
+				{
+					getRect( x, i, rSTemp[ ( y - 1 ) - i ], width, height );
+				}
+				return y;
+			}
 			else
 			{
-				getRect( x + 1, (side ? y + 1 : y - 1), rSTemp[ 3 ], width, height );
-				getRect( x - 1, (side ? y + 1 : y - 1), rSTemp[ 4 ], width, height );
-				return 5;
+				for( i = y + 1; i <= 8; i++ )
+				{
+					getRect( x, i, rSTemp[ i - y ], width, height );
+				}
+				return i;
 			}
+		case P_BISHOP:
+			
+		case P_PRO_BISHOP:
+			
+		case P_ROOK:
+			for( int j = 0; j <= 8; j++ )
+			{
+				if( j == y )
+					rSTemp[ j ] = new Rect();
+				else
+					getRect( x, j, rSTemp[ j ], width, height );
+			}
+			for( int k = 0; k <= 8; k++ )
+			{
+				if( k == x )
+					rSTemp[ k + 9 ] = new Rect();
+				else
+					getRect( k, y, rSTemp[ k + 9 ], width, height );
+			}
+			return 18;
+			
+		case P_PRO_ROOK:
+			for( int j = 0; j <= 8; j++ )
+			{
+				if( j == y )
+					rSTemp[ j ] = new Rect();
+				else
+					getRect( x, j, rSTemp[ j ], width, height );
+			}
+			for( int k = 0; k <= 8; k++ )
+			{
+				if( k == x )
+					rSTemp[ k + 9 ] = new Rect();
+				else
+					getRect( k, y, rSTemp[ k + 9 ], width, height );
+			}
+			getRect( x - 1, y + 1, rSTemp[ 18 ], width, height );
+			getRect( x + 1, y - 1, rSTemp[ 19 ], width, height );
+			getRect( x + 1, y + 1, rSTemp[ 20 ], width, height );
+			getRect( x - 1, y - 1, rSTemp[ 21 ], width, height );
+			return 22;
 		}
 		
 		return 0;

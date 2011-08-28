@@ -19,7 +19,7 @@ public class BoardView extends View {
 	private int selX, selY, oSelX, oSelY, curRsInUse = 0;
 	private boolean pieceSelected = false;
 	private final ShogiGame curGame;
-	private final Rect selRect = new Rect( ), rTemp = new Rect( ), rSTemp[] = new Rect[ 9 ];
+	private final Rect selRect = new Rect( ), rTemp = new Rect( ), rSTemp[] = new Rect[ 22 ];
 	private final static Bitmap pTemp[ ] = new Bitmap[ 15 ];
 	private final Paint selected = new Paint( ), squares = new Paint( ), background = new Paint( ), posMoves = new Paint(),
 		foreground =  new Paint( Paint.ANTI_ALIAS_FLAG );
@@ -55,7 +55,7 @@ public class BoardView extends View {
 		pTemp[ 12 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_p_bishop );
 		pTemp[ 13 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_rook );
 		pTemp[ 14 ] = BitmapFactory.decodeResource( getResources( ), R.drawable.s_p_rook );
-		for( int i = 0; i < 9; i++ )
+		for( int i = 0; i < 22; i++ )
 			rSTemp[ i ] = new Rect();
 	}
 	
