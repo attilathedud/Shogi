@@ -73,6 +73,10 @@ public class LoadGame extends ListActivity {
 	   iGame.putExtra( "CurBoard", buffer.trim().split( "END_OF_GAMEBOARD")[ 0 ] );
  	   iGame.putExtra( "MoveList", buffer.split( "END_OF_GAMEBOARD")[ 1 ].split( "END_OF_MOVELIST")[ 0 ] );
  	   iGame.putExtra( "DropBox", buffer.split( "END_OF_GAMEBOARD")[ 1 ].split( "END_OF_MOVELIST")[ 1 ] );
+ 	   if( buffer.split( "END_OF_DROPBOARD")[ 1 ].trim().equals( "B" ) )
+ 		   iGame.putExtra( "Side", true );
+ 	   else
+ 		  iGame.putExtra( "Side", false );
  	   iGame.putExtra( "SaveName", file );
  	   startActivity( iGame );
 	}

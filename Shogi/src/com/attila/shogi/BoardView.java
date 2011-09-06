@@ -72,57 +72,67 @@ public class BoardView extends View {
 		selY = Math.min(Math.max(y, 0), 8);
 		getRect( selX, selY, selRect );
 		
-		if( this.curGame.getDrop() != -1 )
+		if( this.curGame.getSide() == this.curGame.getTurn() || this.curGame.getAPos() == true )
 		{
-			pieceSelected = false;
-			oSelX = -1;
-			oSelY = -1;
-			this.curGame.dropPiece( selX, selY );
-			invalidate(selRect);
-			return;
-		}
-		
-		if( oSelX != -1 && oSelY != -1 )
-		{
-			if( selX == oSelX && selY == oSelY )
+			if( this.curGame.getDrop() != -1 )
 			{
+				pieceSelected = false;
 				oSelX = -1;
 				oSelY = -1;
-				pieceSelected = false;
+				this.curGame.dropPiece( selX, selY );
+				invalidate(selRect);
+				return;
+			}
+			
+			if( oSelX != -1 && oSelY != -1 )
+			{
+				if( selX == oSelX && selY == oSelY )
+				{
+					oSelX = -1;
+					oSelY = -1;
+					pieceSelected = false;
+					for( int i = 0; i < curRsInUse; i++)
+					{
+						invalidate(rSTemp[ i ]);
+					}
+					return;
+				}
+				
+				this.curGame.setPiece( oSelX, oSelY, selX, selY );
+				invalidate(selRect);
 				for( int i = 0; i < curRsInUse; i++)
 				{
 					invalidate(rSTemp[ i ]);
 				}
+				oSelX = -1;
+				oSelY = -1;
+				pieceSelected = false;
 				return;
 			}
 			
-			this.curGame.setPiece( oSelX, oSelY, selX, selY );
-			invalidate(selRect);
-			for( int i = 0; i < curRsInUse; i++)
+			if( this.curGame.getPiece( selX, selY ) != null && 
+					this.curGame.getPiece( selX, selY ).getSide() == this.curGame.getTurn() )
 			{
-				invalidate(rSTemp[ i ]);
+				pieceSelected = true;
+				oSelX = selX;
+				oSelY = selY;
+				
+				
+				curRsInUse = this.curGame.getPiece( selX, selY ).getPieceMoves( selX, selY, rSTemp, this.width, this.height );
+				for( int i = 0; i < curRsInUse; i++)
+				{
+					invalidate( rSTemp[ i ] );
+				}
 			}
-			oSelX = -1;
-			oSelY = -1;
-			pieceSelected = false;
-			return;
 		}
-		
-		if( this.curGame.getPiece( selX, selY ) != null && 
-				this.curGame.getPiece( selX, selY ).getSide() == this.curGame.getTurn() )
+		else
 		{
-			pieceSelected = true;
-			oSelX = selX;
-			oSelY = selY;
-			
-			
-			curRsInUse = this.curGame.getPiece( selX, selY ).getPieceMoves( selX, selY, rSTemp, this.width, this.height );
-			for( int i = 0; i < curRsInUse; i++)
+			if( this.curGame.getSend() == View.VISIBLE )
 			{
-				invalidate( rSTemp[ i ] );
+				this.curGame.reverseMove();
 			}
 		}
-		
+
 		invalidate(selRect);
 	}
 

@@ -12,7 +12,7 @@ public class NaviBoardDialog extends Dialog {
 	private BoardView bvBoard;
 	private ShogiPiece board[ ][ ];
 	private boolean turn;
-	private int bDrop[ ], wDrop[ ];
+	private int bDrop[ ], wDrop[ ], curMove;
 	private String moveList;
 	
 	@Override
@@ -26,6 +26,7 @@ public class NaviBoardDialog extends Dialog {
 		
 		this.curGame.setAPos( false );
 		this.curGame.setMoveList( moveList );
+		this.curGame.setCurMove( curMove );
 		
 		
 		super.dismiss();
@@ -43,6 +44,7 @@ public class NaviBoardDialog extends Dialog {
 		bDrop = this.curGame.getBDrop();
 		wDrop = this.curGame.getWDrop();
 		moveList = this.curGame.getMoveList();
+		curMove = this.curGame.getCurMove();
 	}
 	
 	public void onPromote( ShogiPiece s )

@@ -159,10 +159,42 @@ public class ShogiPiece {
 				return i;
 			}
 		case P_BISHOP:
+			int t = 0;
 			
+			for( int j = y - 1; j >= 0; j-- )
+			{
+				getRect( x - ( y - j ), j, rSTemp[ t++ ], width, height );
+				getRect( x + ( y - j ), j, rSTemp[ t++ ], width, height );
+			}
+			for( int j = y + 1; j <= 8; j++ )
+			{
+				getRect( x - ( j - y ), j, rSTemp[ t++ ], width, height );
+				getRect( x + ( j - y ), j, rSTemp[ t++ ], width, height );
+			}
+			
+			return t;
 		case P_PRO_BISHOP:
+			int f = 0;
 			
+			for( int j = y - 1; j >= 0; j-- )
+			{
+				getRect( x - ( y - j ), j, rSTemp[ f++ ], width, height );
+				getRect( x + ( y - j ), j, rSTemp[ f++ ], width, height );
+			}
+			for( int j = y + 1; j <= 8; j++ )
+			{
+				getRect( x - ( j - y ), j, rSTemp[ f++ ], width, height );
+				getRect( x + ( j - y ), j, rSTemp[ f++ ], width, height );
+			}
+			
+			getRect( x, y + 1, rSTemp[ f++ ], width, height );
+			getRect( x, y - 1, rSTemp[ f++ ], width, height );
+			getRect( x + 1, y, rSTemp[ f++ ], width, height );
+			getRect( x - 1, y, rSTemp[ f++ ], width, height );
+			
+			return f;
 		case P_ROOK:
+			//add total counter
 			for( int j = 0; j <= 8; j++ )
 			{
 				if( j == y )
@@ -180,6 +212,7 @@ public class ShogiPiece {
 			return 18;
 			
 		case P_PRO_ROOK:
+			//same as rook
 			for( int j = 0; j <= 8; j++ )
 			{
 				if( j == y )

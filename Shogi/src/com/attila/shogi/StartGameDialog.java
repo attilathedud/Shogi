@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class StartGameDialog extends Dialog {
@@ -19,6 +20,14 @@ public class StartGameDialog extends Dialog {
 		Intent iGame = new Intent( getContext(), ShogiGame.class );
 		iGame.putExtra("SaveName", ((EditText) findViewById(R.id.savename_id)).getText().toString() + 
 				" ( " + ((EditText) findViewById(R.id.oPhone_id)).getText().toString() + " )" );
+		if ( ( (CheckBox) findViewById( R.id.opposing_id)).isChecked( ) )
+		{
+			iGame.putExtra( "Side", true );
+		}
+		else
+		{
+			iGame.putExtra( "Side", false );
+		}
 		getContext().startActivity( iGame );
 	}
 	

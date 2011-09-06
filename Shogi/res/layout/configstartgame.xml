@@ -10,6 +10,7 @@
     </EditText>
     <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:text="Save Name" android:id="@+id/textView2"></TextView>
     <EditText android:layout_height="wrap_content" android:id="@+id/savename_id" android:layout_width="match_parent"></EditText>
+    <CheckBox android:text="Play as opposing king (goes first)" android:id="@+id/opposing_id" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center|center_horizontal" android:layout_gravity="center" android:checked="true"></CheckBox>
     <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Start Game!" android:id="@+id/startb_id" android:gravity="center|center_horizontal" android:layout_gravity="center" android:enabled="false"></Button>
     
 </LinearLayout>

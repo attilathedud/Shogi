@@ -27,8 +27,8 @@ public class ShogiGame extends Activity {
 	private final boolean BLACK = true, WHITE = false;
 	
 	private ShogiPiece board[ ][ ] = new ShogiPiece[ 9 ][ 9 ];
-	private int bDrop[ ] = new int[ 7 ], wDrop[ ] = new int[ 7 ], drop = -1, curMove = 1;
-	private boolean turn = true, apos = false;
+	private int bDrop[ ] = new int[ 7 ], wDrop[ ] = new int[ 7 ], drop = -1, curMove = 1, oldCoords[ ] = new int[ 4 ];
+	private boolean turn = true, apos = false, side;
 	private String moveList = "", saveName, phoneNumber = "";
 	private ViewGroup l;
 	private Button send;
@@ -46,7 +46,9 @@ public class ShogiGame extends Activity {
 		
 		saveName = extras.getString( "SaveName" );
 		phoneNumber = saveName.substring( saveName.indexOf( "( ") + 1, saveName.lastIndexOf( " )" ) ).trim();
-		 
+		
+		side = extras.getBoolean( "Side" );
+		
 		if( extras.getString( "MoveList" ) == null )
 			initBoard( );
 		else
@@ -165,12 +167,15 @@ public class ShogiGame extends Activity {
 		navi = new NaviBoardDialog( this );
 		
 		BoardView bvBoard = new BoardView( this );
-//		final Context k = this;
+		final Context k = this;
 		bvBoard.setOnLongClickListener( new OnLongClickListener( ) {
 			public boolean onLongClick( View v )
 			{
-				//Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
-				//d.show( );
+				if( side == turn || apos == true )
+				{
+					Dialog d = new DropBoxDialog( k, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
+					d.show( );
+				}
 				return true;
 			}
 		});
@@ -191,9 +196,19 @@ public class ShogiGame extends Activity {
 				saveGame( );
 			}
 		});
+		
+		/*Button kend = new Button(this);
+		kend.setText( "asd" );
+		kend.setOnClickListener( new View.OnClickListener( ) {			
+			public void onClick( View v )
+			{
+				side = !side;
+			}
+		});*/
 	
 		l.addView( bvBoard );
 		l.addView( send );
+		//l.addView( kend );
 
 		setContentView( l );
 		l.requestFocus();
@@ -225,6 +240,8 @@ public class ShogiGame extends Activity {
 		{
 		case R.id.apos_id:
 			apos = true;
+			if( send.getVisibility( ) == View.VISIBLE )
+				reverseMove( );
 			navi.setGame( this );
 			navi.show();
 			return true;
@@ -232,8 +249,11 @@ public class ShogiGame extends Activity {
 			startActivity( new Intent( this, Prefs.class ) );
 			return true;
 		case R.id.dropboard_id:
-			Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
-			d.show( );
+			if( side == turn )
+			{
+				Dialog d = new DropBoxDialog( this, (turn ? bDrop : wDrop ), (turn ? wDrop : bDrop ) );
+				d.show( );
+			}
 			return true;
 		case R.id.move_list_id:
 			AlertDialog.Builder builder = new AlertDialog.Builder( this );
@@ -323,6 +343,8 @@ public class ShogiGame extends Activity {
 			fos.write( gameBoard.getBytes() );
 			fos.write( (moveList + " ").getBytes() );
 			fos.write( dropBoard.getBytes() );
+			fos.write( "\nEND_OF_DROPBOARD".getBytes() );
+			fos.write( side ? "B".getBytes() : "W".getBytes()  );
 			fos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -333,96 +355,89 @@ public class ShogiGame extends Activity {
 		}
 	}
 	
-/*
-	public void navigate( )
+	public boolean getAPos()
 	{
-		String k = moveList.substring( moveList.lastIndexOf( "." ) + 1 ).trim();
-		char [ ] buffer = new char[ 10 ];
-		
-		k.getChars(0, k.length(), buffer, 0);
-		
-		ShogiPiece temp = board[ (9 - ( buffer[ 4 ] - 48 ) ) ][ ( buffer[ 5 ] - 97 ) ];
-		board[ (9 - ( buffer[ 4 ] - 48 ) ) ][ ( buffer[ 5 ] - 97 ) ] = null;
-		board[ (9 - ( buffer[ 1 ] - 48 ) ) ][ ( buffer[ 2 ] - 97 ) ] = temp;
-		
-		turn = !turn;
-		
-	 	setContentView( bvBoard );
-	  	bvBoard.requestFocus();
-	}*/
+		return apos;
+	}
 	
 	public void dropPiece( int x, int y )
 	{
 		String temp = null;
 		
-		/*Todo: Ensure checkmate isn't given by dropping a pawn */
-		if( board[ x ][ y ] != null || ( ( turn ? y == 0 : y == 8 ) && ( drop == 0 || drop == 1 || drop == 2 ) ) 
-				|| ( ( turn ? y == 1 : y == 7 ) && drop == 1 ) )
-		{
-			Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
-		    notify.setGravity( Gravity.CENTER, 0, 0 );
-		    notify.show( );
-		    
-		    drop = -1;
-		    
-			return;
-		}
-
-		switch( drop )
-		{
-		case 0:
-			for( int i = 0; i < 9; i++ )
+		//if( turn == side || apos == true )
+		//{
+			/*Todo: Ensure checkmate isn't given by dropping a pawn */
+			if( board[ x ][ y ] != null || ( ( turn ? y == 0 : y == 8 ) && ( drop == 0 || drop == 1 || drop == 2 ) ) 
+					|| ( ( turn ? y == 1 : y == 7 ) && drop == 1 ) )
 			{
-				if( board[ x ][ i ] == null )
-					continue;
-				else if( board[ x ][ i ].getPiece() == PieceEnum.P_PAWN && board[ x ][ i ].getSide( ) == turn )
-				{
-					Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
-				    notify.setGravity( Gravity.CENTER, 0, 0 );
-				    notify.show( );
-				    
-				    drop = -1;
-				    
-					return;
-				}
+				Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+			    notify.setGravity( Gravity.CENTER, 0, 0 );
+			    notify.show( );
+			    
+			    drop = -1;
+			    
+				return;
 			}
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, turn );
-			temp = "P";
-			break;
-		case 1:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, turn );
-			temp = "Kn";
-			break;
-		case 2:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, turn );
-			temp = "L";
-			break;
-		case 3:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, turn );
-			temp = "S";
-			break;
-		case 4:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, turn );
-			temp = "G";
-			break;
-		case 5:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, turn );
-			temp = "B";
-			break;
-		case 6:
-			board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, turn );
-			temp = "R";
-		}
-		
-		if( turn == BLACK )
-			bDrop[ drop ]--;
-		else
-			wDrop[ drop ]--;
-		
-		moveList += "\n" + (curMove++) + ". " + temp + "*" + ( 9 - x ) + ( char)( 97 + y ) + " ";
-		
-		drop = -1;
-		turn = !turn;
+	
+			switch( drop )
+			{
+			case 0:
+				for( int i = 0; i < 9; i++ )
+				{
+					if( board[ x ][ i ] == null )
+						continue;
+					else if( board[ x ][ i ].getPiece() == PieceEnum.P_PAWN && board[ x ][ i ].getSide( ) == turn )
+					{
+						Toast notify = Toast.makeText( this, "Can't drop there", Toast.LENGTH_SHORT );
+					    notify.setGravity( Gravity.CENTER, 0, 0 );
+					    notify.show( );
+					    
+					    drop = -1;
+					    
+						return;
+					}
+				}
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_PAWN, turn );
+				temp = "P";
+				break;
+			case 1:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_KNIGHT, turn );
+				temp = "Kn";
+				break;
+			case 2:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_LANCE, turn );
+				temp = "L";
+				break;
+			case 3:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_SILVER, turn );
+				temp = "S";
+				break;
+			case 4:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_GOLD, turn );
+				temp = "G";
+				break;
+			case 5:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_BISHOP, turn );
+				temp = "B";
+				break;
+			case 6:
+				board[ x ][ y ] = new ShogiPiece( PieceEnum.P_ROOK, turn );
+				temp = "R";
+			}
+			
+			if( turn == BLACK )
+				bDrop[ drop ]--;
+			else
+				wDrop[ drop ]--;
+			
+			if( apos == false)
+				send.setVisibility( View.VISIBLE );
+			
+			moveList += "\n" + (curMove++) + ". " + temp + "*" + ( 9 - x ) + ( char)( 97 + y ) + " ";
+			
+			drop = -1;
+			turn = !turn;
+		//}
 	}
 	
 	private void onPromote( ShogiPiece s )
@@ -444,111 +459,135 @@ public class ShogiGame extends Activity {
 		String temp4 = s.getPieceHistoryName();
 		String temp3 = "";
 		
-		if( s.isValidMove(ox, oy, x, y) == false || s.hasPath(board, ox, oy, x, y) == false )
-		{
-			Toast notify = Toast.makeText( this, "Invalid move", Toast.LENGTH_SHORT );
-		    notify.setGravity( Gravity.CENTER, 0, 0 );
-		    notify.show( );
-		    
-		    return;
-		}
-		
-		if( this.getPiece( x, y ) == null || this.getPiece( x, y ).getSide() != s.getSide() )
-		{
-				board[ ox ][ oy ] = null;
-				if( ( s.getSide( ) ? y <= 2 : y >= 6 ) && s.getPromote() != " " )
-				{
-					if( ( s.getSide( ) ? y == 0 : y == 8 ) && ( s.getPiece( ) == PieceEnum.P_PAWN || 
-							s.getPiece( ) == PieceEnum.P_LANCE || s.getPiece( ) == PieceEnum.P_KNIGHT ) )
-					{
-						s.promote( );
-						temp3 = "+";
-					}
-					else if( ( s.getSide( ) ? y == 1 : y == 7 ) && (s.getPiece( ) == PieceEnum.P_KNIGHT ) )
-					{
-						s.promote( );
-						temp3 = "+";
-					}
-					else
-					{
-						AlertDialog.Builder builder = new AlertDialog.Builder( this );
-						builder.setMessage( "Promote?" )
-							   .setCancelable( false )
-						       .setPositiveButton( s.getPieceHistoryName() + "(No)", new DialogInterface.OnClickListener() {
-						           public void onClick(DialogInterface dialog, int id) {
-						        	   dialog.cancel();
-						           }
-						       })
-						       .setNegativeButton( s.getPromote() + "(Yes)", new DialogInterface.OnClickListener() {
-						           public void onClick(DialogInterface dialog, int id) {
-						        	  onPromote( s );
-						           }
-						       });
-						AlertDialog alert = builder.create();
-						alert.show( );
-					}
-				}
-				
-				String temp = "-";
-				
-				if( this.getPiece( x, y ) != null )
-				{
-					temp = "x";
-					
-					int tempDrop = 0;
-					
-					switch( this.getPiece( x, y ).getPiece() )
-					{
-					case P_PAWN:
-					case P_PRO_PAWN:
-						tempDrop = 0;
-						break;
-					case P_KNIGHT:
-					case P_PRO_KNIGHT:
-						tempDrop = 1;
-						break;
-					case P_LANCE:
-					case P_PRO_LANCE:
-						tempDrop = 2;
-						break;
-					case P_SILVER:
-					case P_PRO_SILVER:
-						tempDrop = 3;
-						break;
-					case P_GOLD:
-						tempDrop = 4;
-						break;
-					case P_BISHOP:
-					case P_PRO_BISHOP:
-						tempDrop = 5;
-						break;
-					case P_ROOK:
-					case P_PRO_ROOK:
-						tempDrop = 6;
-						break;
-					}
-					
-					if( turn == BLACK )
-						bDrop[ tempDrop ] += 1;
-					else
-						wDrop[ tempDrop ] += 1;
-					
-				}
-				
-				board[ x ][ y ] = s;
-				
-				send.setVisibility( View.VISIBLE );
-				
-				String temp2 = "";
-				
-				if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != PieceEnum.P_KING && 
-						s.getPiece() != PieceEnum.P_OPPO_KING && s.getPiece() != PieceEnum.P_GOLD) )
-					temp2 = "+";
-				moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPieceHistoryName( ) : temp4 ) + 
-				( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3 + " ";
-				
-				turn = !turn;
+		//if( side == turn || apos == true )
+		//{
+			oldCoords[ 0 ] = ox;
+			oldCoords[ 1 ] = oy;
+			oldCoords[ 2 ] = x;
+			oldCoords[ 3 ] = y;
+			
+			if( s.isValidMove(ox, oy, x, y) == false || s.hasPath(board, ox, oy, x, y) == false )
+			{
+				Toast notify = Toast.makeText( this, "Invalid move", Toast.LENGTH_SHORT );
+			    notify.setGravity( Gravity.CENTER, 0, 0 );
+			    notify.show( );
+			    
+			    return;
 			}
+			
+			if( this.getPiece( x, y ) == null || this.getPiece( x, y ).getSide() != s.getSide() )
+			{
+					board[ ox ][ oy ] = null;
+					if( ( s.getSide( ) ? y <= 2 : y >= 6 ) && s.getPromote() != " " )
+					{
+						if( ( s.getSide( ) ? y == 0 : y == 8 ) && ( s.getPiece( ) == PieceEnum.P_PAWN || 
+								s.getPiece( ) == PieceEnum.P_LANCE || s.getPiece( ) == PieceEnum.P_KNIGHT ) )
+						{
+							s.promote( );
+							temp3 = "+";
+						}
+						else if( ( s.getSide( ) ? y == 1 : y == 7 ) && (s.getPiece( ) == PieceEnum.P_KNIGHT ) )
+						{
+							s.promote( );
+							temp3 = "+";
+						}
+						else
+						{
+							AlertDialog.Builder builder = new AlertDialog.Builder( this );
+							builder.setMessage( "Promote?" )
+								   .setCancelable( false )
+							       .setPositiveButton( s.getPieceHistoryName() + "(No)", new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	   dialog.cancel();
+							           }
+							       })
+							       .setNegativeButton( s.getPromote() + "(Yes)", new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	  onPromote( s );
+							           }
+							       });
+							AlertDialog alert = builder.create();
+							alert.show( );
+						}
+					}
+					
+					String temp = "-";
+					
+					if( this.getPiece( x, y ) != null )
+					{
+						temp = "x";
+						
+						int tempDrop = 0;
+						
+						switch( this.getPiece( x, y ).getPiece() )
+						{
+						case P_PAWN:
+						case P_PRO_PAWN:
+							tempDrop = 0;
+							break;
+						case P_KNIGHT:
+						case P_PRO_KNIGHT:
+							tempDrop = 1;
+							break;
+						case P_LANCE:
+						case P_PRO_LANCE:
+							tempDrop = 2;
+							break;
+						case P_SILVER:
+						case P_PRO_SILVER:
+							tempDrop = 3;
+							break;
+						case P_GOLD:
+							tempDrop = 4;
+							break;
+						case P_BISHOP:
+						case P_PRO_BISHOP:
+							tempDrop = 5;
+							break;
+						case P_ROOK:
+						case P_PRO_ROOK:
+							tempDrop = 6;
+							break;
+						}
+						
+						if( turn == BLACK )
+							bDrop[ tempDrop ] += 1;
+						else
+							wDrop[ tempDrop ] += 1;
+						
+					}
+					
+					board[ x ][ y ] = s;
+					
+					if( apos == false )
+						send.setVisibility( View.VISIBLE );
+					
+					String temp2 = "";
+					
+					if( s.getPromote() == " " && temp3 == "" && ( s.getPiece() != PieceEnum.P_KING && 
+							s.getPiece() != PieceEnum.P_OPPO_KING && s.getPiece() != PieceEnum.P_GOLD) )
+						temp2 = "+";
+					moveList += "\n" + ( curMove++ ) + ". " + temp2 + ( temp3 == "" ? s.getPieceHistoryName( ) : temp4 ) + 
+					( 9 - ox ) + ( ( char )( 97 + oy ) ) + temp + ( 9 - x ) + ( ( char)( 97 + y ) ) + temp3 + " ";
+					
+					turn = !turn;
+				}
+		//}
+	}
+	
+	public void reverseMove( )
+	{
+		board[ oldCoords[ 0 ] ][ oldCoords[ 1 ] ] = new ShogiPiece( board[ oldCoords[ 2 ] ][ oldCoords[ 3 ] ].getPiece(), side );
+		board[ oldCoords[ 2 ] ][ oldCoords[ 3 ] ] = null;
+		
+		send.setVisibility( View.INVISIBLE );
+		
+		setContentView( l );
+		l.requestFocus();
+		
+		curMove--;
+		
+		turn = !turn;
 	}
 	
 	public ShogiPiece[][] getBoard( )
@@ -644,6 +683,26 @@ public class ShogiGame extends Activity {
 	public void setTurn( boolean t )
 	{
 		turn = t;
+	}
+	
+	public boolean getSide( )
+	{
+		return side;
+	}
+	
+	public int getSend( )
+	{
+		return send.getVisibility();
+	}
+	
+	public int getCurMove( )
+	{
+		return curMove;
+	}
+	
+	public void setCurMove( int f )
+	{
+		curMove = f;
 	}
 
 }
